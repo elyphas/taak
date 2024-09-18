@@ -1,0 +1,62 @@
+package manik1.modules.requisitions
+
+import outwatch._
+import outwatch.dsl._
+import outwatch_components.ColG_Json
+import encoder_json.types._
+
+trait GridLstItemsRequisitionJson {
+
+  val fmtNumbCenter = VDomModifier(textAlign := "center")
+  val noDisplay = VDomModifier(display.none)
+
+  val colsFmt = Seq (
+    ColG_Json( field = ("user", JsonString(""))),
+    ColG_Json( field = ("entidad", JsonString(""))),
+    ColG_Json( field = ("id_area", JsonString(""))),
+    ColG_Json( field = ("fiscal_period", JsonInt(2021))),
+    ColG_Json( field = ("folio", JsonInt(0))),
+    ColG_Json( field = ("date", JsonString(""))),
+
+    ColG_Json(  field = ("key_item", JsonString("")),
+                title = Some("Cve. Articulo"),
+                styleTitle = Some(VDomModifier(width := "100px")),
+                styleCell = Some(VDomModifier(textAlign := "center")),  edit = true),
+
+    ColG_Json(  field = ("description_item", JsonString("")),
+                title = Some("Descripción"),
+                styleTitle = Some(VDomModifier(width := "300px")),
+                styleCell = Some(VDomModifier(textAlign := "justify")),  edit = true),
+
+    ColG_Json(  field = ("measurement_unit", JsonString("")),
+                title = Some("Unidad de Medida"),
+                styleTitle = Some(VDomModifier(width := "50px")),
+                styleCell = Some(VDomModifier(textAlign := "center"))),
+
+    ColG_Json(  field = ("presentation", JsonInt(0)),
+                title = Some("Presentación"),
+                styleTitle = Some(VDomModifier(width := "50px")),
+                styleCell = Some(VDomModifier(textAlign:="justify")), inputType="TextArea"),
+
+    ColG_Json(  field = ("package_unit_measurement", JsonString("")),
+                title = Some("Unidad Medida Presentacion"),
+                styleTitle = Some(Seq(width:="50px")),
+                styleCell = Some(VDomModifier(textAlign:="center"))),
+
+    ColG_Json(  field = ("Lote", JsonString("")),
+                title = Some("batch"),
+                styleTitle = Some(VDomModifier(width := "50px")),
+                styleCell = Some(VDomModifier(textAlign := "center"))),
+
+    ColG_Json(  field = ("Caducidad", JsonString("")),
+                title = Some("expiration"),
+                styleTitle = Some(VDomModifier(width := "50px")),
+                styleCell = Some(VDomModifier(textAlign := "center"))),
+
+    ColG_Json(  field = ("amount", JsonInt(0)),
+                title = Some("cantidad"),
+                styleTitle = Some(VDomModifier(width := "70px")),
+                styleCell = Some(VDomModifier(textAlign:="center")), edit = true ),
+
+  )
+}

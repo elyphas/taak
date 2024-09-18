@@ -1,0 +1,63 @@
+package example
+
+import com.outr.arango.transaction.{Transaction, TransactionStatus}
+import com.outr.arango.api.{OperationType, WALOperation, WALOperations}
+import com.outr.arango.{ArangoDB, Credentials, DatabaseState}
+import com.outr.arango.{ArangoException, Document, DocumentModel, Id, Index, Query}
+import com.outr.arango.{IndexType, Serialization}
+
+import com.outr.arango._
+import com.outr.arango.query._
+
+import io.youi.http.Headers
+
+import profig.Profig
+
+//import scala.concurrent.Future
+import scala.concurrent.Promise
+import scala.concurrent._
+import scala.concurrent.duration._
+
+import scala.language.postfixOps
+
+class HelloScarango {
+  
+  implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
+
+  Profig.initConfiguration().map { in => println(in) }
+
+  lazy val db = new ArangoDB(credentials = Some(Credentials("root", "jctaurys")))
+  lazy val dbExample = db.api.db("example")
+  lazy val collection = dbExample.collection(User.collectionName)
+  val serializacion: Serialization[User] = User.serialization
+
+  case class User( name: String, age: Int, observation: String,
+        _id: Id[User] = User.id() ) extends Document[User]
+
+  object User extends DocumentModel[User] {
+      override def indexes: List[Index] = Nil
+
+      override val collectionName: String = "testChangos"
+      override val serialization: Serialization[User] = Serialization.auto[User]
+  }
+
+  /*db.init().map { state => 
+      println("Init example *****")
+      println(state )
+  }*/
+
+  val query = aqlu"FOR user IN testChangos RETURN user"
+
+  val ver = for {
+      _ <- db.init()
+      //results <- db.api.db.validate("FOR user IN testChangos RETURN user")
+      results <- dbExample.query(query).as[User].cursor
+  } yield {
+    println ( "Resultado *********** " )
+    results.result.toSet.map(println)
+    //println ( results ) 
+  }
+
+  //println( Await.result(ver, 10 seconds))
+
+}

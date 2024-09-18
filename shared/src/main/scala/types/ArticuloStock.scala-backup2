@@ -1,0 +1,45 @@
+package shared
+package mytypes
+
+case class ArticuloStock (
+      entidad: String,
+      area: String,
+      cve_articulo: String,
+      descripcion: String,
+      unidad: String,
+      presentacion: Option[Int],
+      unid_med_pres: Option[String],
+      partida: Option[String],
+      max: Option[Double],
+      min: Option[Double],
+      stock: Option[Double]
+)
+
+object ArticuloStock {
+
+  def apply(
+             entidad: String = "",
+             area: String = "",
+             cve_articulo: String = "",
+             descripcion: String = "",
+             unidad: String = "",
+             presentacion: Option[Int] = None,
+             unid_med_pres: Option[String] = None,
+             partida: Option[String] = None,
+             max: Option[Double] = None,
+             min: Option[Double] = None,
+             stock: Option[Double] = None
+           ): ArticuloStock = new ArticuloStock (
+    entidad = entidad,
+    area = area,
+    cve_articulo = cve_articulo,
+    descripcion = descripcion,
+    unidad = unidad,
+    presentacion = presentacion,
+    unid_med_pres = unid_med_pres,
+    partida = partida,
+    max = max,
+    min = min,
+    stock = stock
+  )
+}

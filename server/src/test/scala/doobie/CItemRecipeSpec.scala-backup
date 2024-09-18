@@ -1,0 +1,124 @@
+package testing_doobie
+
+import monix.execution.ExecutionModel.SynchronousExecution
+import monix.execution.Scheduler
+import monix.execution.schedulers.TrampolineScheduler
+
+import org.scalatest.concurrent.ScalaFutures
+
+import org.scalatest.{FlatSpec, Matchers, Tag}
+
+import cats.implicits._
+import doobie.implicits._
+import doobie_classes.CMyConnection
+import manik1.manik1.shared.EventsDoobie._
+
+import spatutorial.shared.{ItemRecipe}
+import doobie_classes.CItemRecipe
+
+object SeekItemRecipeSpec extends Tag("SeekItemRecipeSpec")
+object SelectItemRecipeSpec extends Tag("SelectItemRecipeSpec")
+object UpdateItemRecipeSpec extends Tag("UpdateItemRecipeSpec")
+object InsertItemRecipeSpec extends Tag("InsertItemRecipeSpec")
+object DeleteItemRecipeSpec extends Tag("DeleteItemRecipeSpec")
+object EventsItemRecipeSpec extends Tag("EventsItemRecipeSpec")
+
+class CItemRecipeSpec extends FlatSpec with Matchers with ScalaFutures {
+
+  implicit val scheduler = TrampolineScheduler(Scheduler.global, SynchronousExecution)
+
+   val myConnection = new CMyConnection
+
+  "Select Item Recipe from table" must "be Selected" taggedAs(SelectItemRecipeSpec) in {
+      val ctest = new CItemRecipe
+      println("Selecting ***************************************")
+      val result = ctest.select(2020, "7777", "002.502.0719")
+                        .transact(myConnection.xa).attempt.map(_.leftMap(_.getMessage)).unsafeToFuture
+
+      println(result)
+  }
+
+  "Update record from table" must "be updated" taggedAs(UpdateItemRecipeSpec) in {
+      val item = ItemRecipe(fiscal_period = 2020, folio = "7777", 
+                            key_item = "002.502.0719", 
+                            description_item = "stament generator",
+                            //quantity = 555
+                            )
+      val ctest = new CItemRecipe
+      /*val ver = ctest .event(item, UpdateDoobie) .transact(myConnection.xa) .attempt.map(_.leftMap(_.getMessage)) .unsafeRunSync 
+      println(ver)*/
+  }
+  
+  "Insert record into table" must "be inserted" taggedAs(InsertItemRecipeSpec) in {
+
+/* 000.502.0036
+ 000.502.0056
+ 000.502.0116
+ 000.502.0117
+ 000.502.0166*/
+
+      val item = ItemRecipe(  fiscal_period = 2020, 
+                              folio = "7777", 
+                              key_item = "000.502.0036", 
+                              description_item = "changos testing inserting",
+                              //measurement_unit = "PIEZA",
+                              presentation = None,
+                              package_unit_measurement = None,
+                              //quantity = 444
+                          )
+
+      val ctest = new CItemRecipe
+
+
+      println("Testing insert ************************")
+      val result = ctest
+          .insert(item).update.run
+          .transact(myConnection.xa)
+          .attempt.map(_.leftMap(_.getMessage)) .unsafeRunSync 
+
+      println(result)
+
+  }
+
+  "Delete record from table" must "be deleted" taggedAs(DeleteItemRecipeSpec) in {
+      val item = ItemRecipe( 
+                    fiscal_period = 2020, 
+                    folio = "7777", 
+                    key_item = "000.502.0036" )
+
+      val ctest = new CItemRecipe
+
+      /*val ver = ctest .event(item, DeleteDoobie) .transact(myConnection.xa) .attempt.map(_.leftMap(_.getMessage)) .unsafeRunSync
+      println(ver)*/
+
+  }
+
+  "Search for Item with byIdItem" must "be found" taggedAs(SeekItemRecipeSpec) in {
+        val item = ItemRecipe( fiscal_period = 2020, folio = "7777", key_item = "000.502.0036" )
+        val ctest = new CItemRecipe
+        /*val ver = ctest .event(item, FindDoobie) .transact(myConnection.xa) .attempt.map(_.leftMap(_.getMessage)) .unsafeRunSync
+        println(ver)*/
+  }
+
+
+  "Testing event method" must "be do differente event" taggedAs(EventsItemRecipeSpec) in {
+      
+      val ctable = new CItemRecipe
+
+      val event: EventsDoobieWillDo = InsertDoobie 
+
+      val item = ItemRecipe(fiscal_period = 2020, folio = "7777", key_item = "000.502.0036")
+
+      val result = event match {
+          case InsertDoobie =>
+                for {
+                    _ <- ctable.insert(item).update.run
+                } yield (item, SavedDoobie(): EventsDoobieResult)
+      }
+
+      val didRun = result.transact(myConnection.xa).attempt.map(_.leftMap(_.getMessage)).unsafeToFuture
+
+      println(didRun)
+
+  }
+}

@@ -1,0 +1,302 @@
+package manik1.modules.inputs
+
+import cats.data.Validated.{Invalid, Valid}
+import manik1.gridCatalogs.GridCatalogsFromGrid
+import manik1.repositories.{RepositoryItemDocument, RepositoryLstItemsDocument}
+import org.scalajs.dom
+import org.scalajs.dom.html
+import org.scalajs.dom.window.{alert, confirm}
+import spatutorial.shared.{ArticuloStock, BatchAndExpiration_AuxGrid, Inputs, ItemInput, ItemInput_AuxGrid, ItemInput_ValidateJs}
+import outwatch_components.inputs._
+//import cats.data._
+import cats.implicits._
+//import cats.effect.{IO, SyncIO}
+//import manik1.services.{WSCovenant, WSMyCelium}
+
+//import scala.concurrent.duration._
+import monix.execution.Scheduler.Implicits.global
+import monix.execution.{Ack, Cancelable}
+import monix.execution.Ack.{Continue, Stop}
+import monix.reactive.{Observable, Observer}
+import colibri.ext.monix._
+import colibri.ext.monix.ops._
+import encoder_json.types._
+import outwatch.reactive.handlers.monix._
+import outwatch._
+import outwatch.dsl.{span => sp, _}
+
+import scala.scalajs.js.{Date => jsDate}
+
+import scala.language.postfixOps
+
+import scala.concurrent.Future
+import scala.scalajs.js.Date
+
+import manik1.manik1.shared.EventsDB._
+
+import outwatch_components.{ColG, Grid}
+import scala.util.{Failure, Success, Try}
+import manik1.modules.grid.GridFieldsFormatJson
+import spatutorial.shared.ArticuloCatalog
+
+class FrmLstItemsInputs(standalone: Boolean = true)
+                       (implicit
+                            repoItem: RepositoryItemDocument[ItemInput],
+                            repoLstItems: RepositoryLstItemsDocument[Inputs, ItemInput],
+                            gridColsFmt: GridFieldsFormatJson[ItemInput]
+                      )
+                      {
+
+  val grid = new Grid(gridColsFmt.colsFmt, VDomModifier.empty, VDomModifier.empty, Map.empty[String, String], transitionOnInsert = 3)
+
+  val gridCatalog = GridCatalogsFromGrid[ArticuloStock, ArticuloCatalog, EventsDBResult](grid, 12)
+
+  val hdlProcessingSideEffects = Handler.create[String]("").unsafeRunSync
+  val processingSideEffectsSearching = hdlProcessingSideEffects.contramap[(String, String, String)]{ case (route, fld, msg) =>  
+  s"Buscando: $msg"}
+
+  val today = new Date
+
+  val hdlUser = Handler.create[String]("").unsafeRunSync()
+  val hdlEntidad = Handler.create[String]("").unsafeRunSync()
+  val hdlIdArea = Handler.create[String]("").unsafeRunSync()
+
+  val hdlFiscalPeriod = Handler.create[Int](today.getFullYear.toInt).unsafeRunSync()
+  val hdlFolio = Handler.create[String]("").unsafeRunSync()
+  val hdlTypeDocto = Handler.create[String]("").unsafeRunSync()
+  val hdlProgramaPresup = Handler.create[String]("").unsafeRunSync()
+
+  def getId = (
+                hdlUser: Observable[String],
+                hdlEntidad: Observable[String],
+                hdlIdArea: Observable[String],
+                hdlFiscalPeriod: Observable[Int],
+                hdlFolio: Observable[String],
+                hdlTypeDocto: Observable[String],
+                hdlProgramaPresup: Observable[String]
+    )
+    .parMapN { case (
+                    user: String,
+                    entidad: String,
+                    id_area: String,
+                    fiscal_period: Int,
+                    folio: String,
+                    type_docto: String,
+                    programaPresup: String
+          ) => Inputs (
+                      user = user,
+                      entidad = entidad,
+                      id_area = id_area,
+                      fiscal_period = fiscal_period,
+                      folio = folio,
+                      type_document = type_docto,
+                      programa_presupuestal = programaPresup
+                )
+    }
+    .filter { record => record.folio.nonEmpty }
+
+  val hdlTypeDocument = Handler.create[String]("").unsafeRunSync
+
+  /*def cboTypeDocuments = hdlTypeDocument.map { lstTypeDocuments =>
+          cmpCombo("Tipo de Docto.", hdlTypeDocument, lst = lstTypeDocuments.toMap, StylesTxt.larger, itemSelected = "", w = 80)
+  }*/
+
+  val a = ItemInput()
+
+  def fillGrid(lst: List[ItemInput], item: Inputs) = {
+
+        val defaultValues = Map (
+                                "user" -> JsonString(item.user),
+                                "entidad" -> JsonString(item.entidad),
+                                "id_area" -> JsonString(item.id_area),
+                                "fiscal_period" -> JsonInt(item.fiscal_period),
+                                "folio" -> JsonString(item.folio),
+                                "type_document" -> JsonString(item.type_document),
+                                "programa_presupuestal" -> JsonString(item.programa_presupuestal),
+                                "timestamp" -> JsonLong(item.date),
+                          )
+        grid.setDefaultValues(defaultValues)
+        //if (isNew) {
+        def longToDate(l: Long) = {
+              val newDate = new jsDate(l.toDouble)
+              newDate.getDate() + "/" + (newDate.getMonth() + 1) + "/" + newDate.getFullYear()
+        }
+
+        val lst_AuxGrid = lst.map { x =>
+            val batchAndExp_AuxGrid = x.batchAndExpiration match {
+                    case Some(b) =>
+                        val dateStr = longToDate(b.expiration)
+                        Some(BatchAndExpiration_AuxGrid(batch = b.batch, expiration = dateStr))
+                    case None => None
+                }
+
+          ItemInput_AuxGrid (
+                  user = x.user,
+                  entidad = x.entidad,
+                  id_area = x.id_area,
+                  fiscal_period = x.fiscal_period,
+                  folio = x.folio,
+                  type_document = x.type_document,
+                  programa_presupuestal = x.programa_presupuestal,
+                  key_item = x.key_item,
+                  description_item = x.description_item,
+                  measurement_unit = x.measurement_unit,
+                  presentation = x.presentation,
+                  package_unit_measurement = x.package_unit_measurement,
+                  batchAndExpiration = batchAndExp_AuxGrid,
+                  amount = x.amount
+            )
+
+        }
+
+        grid.loadValues(lst_AuxGrid)   //(lst )
+        grid.insertRow3(None, Some(7))
+  }
+
+  def connectGridEvents = {
+    def sourcChangeVal(fldCC: String, fldDB: String, route: String, lng: Int) = 
+            grid.srcChangingValue(fldCC, x => x.length > lng).map { txt => (route, fldDB, txt) }
+
+    def processEvent(search: monix.reactive.subjects.PublishSubject[(String,String,String)]) = 
+             colibri.Observer.combineVaried(processingSideEffectsSearching, search)
+
+    def validate(recordOpt: Option[Map[String, JsonValue]]) = {
+            val record = recordOpt.getOrElse(Map.empty[String, JsonValue])
+            ItemInput_ValidateJs.validate(record) match {
+                case Valid(a) =>
+                      if (a.amount > 0) true else false
+                case Invalid(e) =>
+                      val errors = e.foldLeft(""){ case (acc, next) => acc + "\n" + next }.mkString("\n")
+                      alert(errors)
+                      false
+            }
+    }
+
+    def convert(record: Option[Map[String, JsonValue]]) =
+            ItemInput_ValidateJs.validate(record.getOrElse(Map.empty[String, JsonValue])) match {
+                  case Valid(a) => a
+                  case Invalid(e) => ItemInput()     //Nunca va ha pasar por aqui por que no llega despues del filter.
+            }
+
+      div (
+          emitter(
+            grid.actionOnEnter2("amount")
+                    .filter { case (record, isNew) =>
+                        if (validate(record)) true
+                        else {
+                            alert("¡El valor debe ser mayor que cero!")
+                            false
+                        }
+                    }
+                    .map { case (record, isNew) => (InsertDB, (convert(record), isNew)) }
+          ) --> repoItem.event,
+
+          /*emitter(
+                grid
+                    .actionOnDelete
+                    .map((DeleteDoobie, _))
+          ) --> repo.event,*/
+
+          emitter(
+            grid.actionOnEscape
+          ) --> gridCatalog.hdlCatalog.contramap[Int]( _ => gridCatalog.emptyCatalog),
+ 
+          emitter(
+            grid.hdlPositionCursor
+          )--> gridCatalog
+            .hdlPositionCursor
+            .contramap[(Int,Int)]( x => x ),
+
+          emitter(
+            sourcChangeVal(
+                  "description_item", 
+                  "descripcion", 
+                  "ftsArticulo", 
+                  6)
+          ) --> processEvent(gridCatalog.searchCatalogByDescripcionOnDB),
+
+          emitter(
+              sourcChangeVal(
+                  "key_item", 
+                  "cve_articulo", 
+                  "idArticuloContains",
+                1)
+          ) --> processEvent(gridCatalog.searchCatalogByIdOnDB),
+
+          emitter (
+              grid.subjectKeyDown
+          ) --> gridCatalog.gridCatalog.observerMoveCursor ,
+
+      )
+  }
+
+ /**    --  Esto se debe refactorizar con hot observables y conectar por separado hdlProcessingSideEffects, y demas side effects.
+   * */
+
+  val observDBResults = new Observer[Either[String, ((ItemInput, EventsDBResult), Boolean)]] {
+      def onNext(elem: Either[String, ((ItemInput, EventsDBResult), Boolean)]): Future[Ack] = {
+          Try {
+            elem match {
+              case Right(((result, event), isNew)) =>
+                event match {
+                  case SavedDB(msg) if (isNew) =>
+                    hdlProcessingSideEffects.onNext(event.msg)
+                    grid.insertRow3(None, Some(7))
+                  case _ =>
+                    hdlProcessingSideEffects.onNext("Se modifico el registro actual!")
+                }
+              case Left(error) =>
+                  hdlProcessingSideEffects.onNext(error)
+            }
+          } match {
+              case Success(value) => value
+              case Failure(exception) => alert("Hubo un error en el observEventListItems: FrmLstItems" + exception.getMessage)
+          }
+          Continue
+      }
+      def onError(ex: Throwable): Unit = alert(ex.printStackTrace.toString)
+      def onComplete(): Unit = println("O completed updateGrid")
+  }
+
+  val observEventDocument = new Observer[Either[String, (Inputs, List[ItemInput], EventsDBResult)]] {
+          def onNext(elem: Either[String, (Inputs, List[ItemInput], EventsDBResult)]): Future[Ack] = {
+              Try {
+                  elem match {
+                      case Right((recipe, lst, event)) => fillGrid(lst, recipe)
+                      case   Left(error) => alert(error)
+                  }
+              } match {
+                  case Success(value) => value
+                  case Failure(exception) => alert("Error en el observEventDocument: FrmLstItems" + exception.getMessage)
+              }
+              Continue
+          }
+          def onError(ex: Throwable): Unit = alert(ex.printStackTrace.toString)
+          def onComplete(): Unit = println("O completed updateGrid")
+  }
+
+  repoLstItems.onEventListItems.subscribe(observEventDocument)
+
+  def connectOtherComponents = div( emitter(getId) --> repoLstItems.eventListItems )
+
+  def render = colibri.Observable(
+      div(id := "pageForm",
+          div(hdlProcessingSideEffects.map( x => div(clear.both, cls := "processingSideEffects", "El listado: " + x ))),
+          connectOtherComponents,
+          connectGridEvents,
+          div(
+            managedElement { elem =>
+                repoItem.onEvent.subscribe(observDBResults)
+            },
+            managedElement { elem =>
+                repoItem.obsProcessSideEffects.subscribe(hdlProcessingSideEffects)
+            }
+          ),
+          div( cls := "groupControls", marginLeft := "-35px",
+              grid.render,
+              gridCatalog.render,
+          ),
+      )
+  )
+
+}

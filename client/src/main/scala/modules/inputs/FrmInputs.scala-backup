@@ -1,0 +1,313 @@
+package manik1.modules.inputs
+
+import cats.data.Validated.{Invalid, Valid}
+import cats.effect.SyncIO
+import spatutorial.shared.{Inputs, ItemInput}
+import org.scalajs.dom.html
+import org.scalajs.dom.raw.MouseEvent
+import org.scalajs.dom.window.alert
+import outwatch_components.inputs._
+
+import cats.implicits._
+import manik1.repositories.{RepositoryDocument, RepositoryItemDocument, RepositoryLstItemsDocument}
+
+import scala.concurrent.duration._
+import monix.execution.Scheduler.Implicits.global
+import monix.execution.Cancelable
+import monix.reactive.{Observable, Observer}
+import colibri.ext.monix._
+import colibri.ext.monix.ops._
+import org.scalajs.dom
+import outwatch.reactive.handlers.monix._
+import outwatch._
+import outwatch.dsl.{span => sp, _}
+
+import scala.scalajs.js.{Date => jsDate}
+import java.util.Date
+
+import manik1.manik1.shared.EventsDB._
+
+import encoder_json.types._
+
+import manik1.modules.FrmMainItem
+import scala.concurrent.Future
+import scala.util.{Failure, Success, Try}
+
+//import manik1.manik1.shared.GenericInstances
+
+class FrmInputs (implicit
+                    //repo: ListItemsRepositoryInputs
+                 repoDocument: RepositoryDocument[Inputs],
+                 repoItem: RepositoryItemDocument[ItemInput],
+                 repoLstItem: RepositoryLstItemsDocument[Inputs, ItemInput]
+      ) extends FrmMainItem[Inputs] {
+
+  type Item = Inputs
+  val item: Inputs = Inputs()
+
+  val hdlShowGrid = Handler.create[Boolean](false).unsafeRunSync()
+
+  val hdlMainItem = Handler.create[Inputs](item).unsafeRunSync()
+  hdlMainItem.onNext(item)
+
+  val hdlUser = hdlMainItem.lens[String](item)(_.user)((state,newState) => state.copy(user = newState))
+  val cancelableUser = hdlUser.connect
+
+  val hdlEntidad = hdlMainItem.lens[String](item)(_.id_area)((state,newState) => state.copy(entidad = newState))
+  val cancelableEntidad = hdlEntidad.connect
+
+  val hdlIdArea = hdlMainItem.lens[String](item)(_.id_area)((state,newState) => state.copy(id_area = newState))
+  val cancelableIdArea = hdlIdArea.connect
+
+  val hdlDateInputs = hdlMainItem.lens[Long](item)(_.date)((state, newState) => state.copy(date = newState))
+  val cancelableDateInputs = hdlDateInputs.connect
+
+  val hdlFiscalPeriod = hdlMainItem.lens[Int](item)(_.fiscal_period)((state, newState) => state.copy(fiscal_period = newState))
+  val cancelableFiscalPeriod = hdlFiscalPeriod.connect
+
+  val hdlFolio = hdlMainItem.lens[String](item)(_.folio)((state, newState) => state.copy(folio = newState))
+  val cancelableFolio = hdlFolio.connect
+
+  val hdlTypeDocto = hdlMainItem.lens[String](item)(_.type_document)((state, newState) => state.copy(type_document = newState))
+  val cancelableTypeDocument = hdlTypeDocto.connect
+
+  val hdlProgramaPresu = hdlMainItem.lens[String](item)(_.programa_presupuestal)((state, newState) => state.copy(programa_presupuestal = newState))
+  val cancelableProgramaPresu = hdlProgramaPresu.connect
+  
+  val hdlDate = hdlMainItem.lens[Long](item)(_.date)((state, newState) => state.copy(date = newState))
+  val cancelableDateOutput = hdlDate.connect
+
+  val hdlObservacion = hdlMainItem.lens[String](item)(_.observation.getOrElse(""))((state,newState) => 
+                            state.copy(observation = Some(newState)))
+  val cancelableObservacion = hdlObservacion.connect
+
+  val getId = (
+                  hdlUser: Observable[String],
+                  hdlEntidad: Observable[String],
+                  hdlIdArea: Observable[String],
+                  hdlFiscalPeriod: Observable[Int],
+                  hdlFolio: Observable[String],
+                  hdlTypeDocto: Observable[String],
+                  hdlMainItem: Observable[Inputs],
+              )
+              .parMapN { case (
+                        user,
+                        entidad,
+                        area,
+                        fiscal_period,
+                        folio,
+                        type_document,
+                        inputs
+                ) =>
+                      inputs.copy(
+                          user = user,
+                          entidad = entidad,
+                          id_area = area,
+                          fiscal_period = fiscal_period,
+                          folio = folio,
+                          type_document = type_document
+                      )
+              }.filter { item =>
+                    item.user.length > 0 &&
+                    item.fiscal_period >= 2022 &&
+                    item.type_document.length > 0
+              }
+
+  val getMainItem = (getId: Observable[Inputs], hdlNew: Observable [Boolean])
+                    .parMapN { case (item: Inputs, isNew: Boolean) =>
+                          (item, isNew)
+                    }
+
+  val cleanListGridItems = new colibri.Observer[String] {
+              def onNext(elem: String): Unit = {
+                    frmLstItems.fillGrid(List.empty[ItemInput], Inputs())
+                    frmLstItems.hdlFolio.onNext("")
+                    frmLstItems.fillGrid(List.empty[ItemInput], Inputs())
+                    hdlNew.onNext(true)
+              }
+              def onError(ex: Throwable): Unit = alert(ex.printStackTrace.toString)
+              def onComplete(): Unit = println("O completed cleanListGridItems")
+      }
+
+  val onNew = colibri.Observer.combineVaried(
+              colibri.Observer.combineVaried(
+                cleanListGridItems,
+                    colibri.Observer.combineVaried(
+                        hdlMainItem.contramap[String](x => item),
+                        hdlProcessingSideEffects.contramap[String](x => "Nuevo")
+                    )
+                  ),
+                  hdlNew.contramap[String](x => true)
+              )
+
+  val onChangingId = SyncIO(
+        onInput
+          .value
+          .debounce(800 milliseconds)
+          .transformLifted{ e: Observable[String] =>
+            e
+              .distinctUntilChanged
+              .filter( _.length > 4)
+              .withLatestFrom(getId) { case (txt@_, item) =>
+                    (item, FindDB)
+        }} --> repoDocument.eventDocument
+    )
+
+  def menuButtons  =
+    div( cls := "groupControls", marginTop := "20px",
+      button( id := "cmdSave", "Guardar", cls := "myButton",
+        onClick
+            .transformLifted { e: Observable[MouseEvent] =>
+                e
+                  .withLatestFrom(getMainItem)
+                  { case (event@_, (item, isNew)) =>
+                      (item, (if (isNew) InsertDB else UpdateDB))
+                  }
+            } --> repoDocument.eventDocument,
+      ),
+      button( id := "cmdSearch", "Buscar", cls := "myButton",
+          onClick.transformLifted { e: Observable[MouseEvent] =>
+              e.withLatestFrom(getMainItem){ case (event@_, (item, isNew)) =>
+                  (item, FindDB)
+              }
+          } --> repoDocument.eventDocument,
+      ),
+      button( id := "cmdDelete", "Borrar", cls := "myButton",
+          onClick.transformLifted { e: Observable[MouseEvent] =>
+              e.withLatestFrom(getMainItem){ case (event@_, (item: Item, isNew: Boolean)) =>
+                  (item, DeleteDB)
+              }
+          } --> repoDocument.eventDocument,
+      ),
+      button( id := "cmdNew", "Nuevo", cls := "myButton",
+        onClick.use("") --> onNew )
+    )
+
+  val vdomTxt = VDomModifier(width := "60px", textAlign := "center")
+
+  val stylesXLarger = VDomModifier(width := "150px")
+
+  val stylesCombo = VDomModifier(width := "100px")
+
+  val obsOnDomMount = colibri.Observer.create[dom.Element] { elem => elem.asInstanceOf[html.Input].focus }
+
+  val txtFolioOnDomMount = SyncIO(onDomMount.transformLifted((elem: Observable[dom.Element]) => elem)--> obsOnDomMount)
+
+  val frmLstItems = new FrmLstItemsInputs(false)
+
+  def connectOtherComponents =
+          div(
+
+            emitter(
+              hdlUser
+                .drop(1)
+                .debounce(800 milliseconds)
+                .distinctUntilChanged
+            ) --> frmLstItems.hdlUser.contramap[String](x => x),
+
+            emitter(
+              hdlEntidad
+                .drop(1)
+                .debounce(800 milliseconds)
+                .distinctUntilChanged
+            ) --> frmLstItems.hdlEntidad.contramap[String](x => x),
+
+            emitter(
+              hdlFolio
+                .drop(1)
+                .debounce(800 milliseconds)
+                .distinctUntilChanged
+            ) --> frmLstItems.hdlFolio.contramap[String](x => x),
+
+            emitter(
+              hdlFiscalPeriod
+                .drop(1)
+                .debounce(800 milliseconds)
+                .distinctUntilChanged
+            ) --> frmLstItems.hdlFiscalPeriod.contramap[Int](x => x),
+
+            emitter(
+              hdlTypeDocto
+                .drop(1)
+                .filter(_.nonEmpty)
+                .debounce(800 milliseconds)
+                .distinctUntilChanged
+            ) --> frmLstItems.hdlTypeDocto.contramap[String](x => x),
+
+            emitter(
+              hdlProgramaPresu
+                .drop(1)
+                .filter(_.nonEmpty)
+                .debounce(800 milliseconds)
+                .distinctUntilChanged
+            ) --> frmLstItems.hdlProgramaPresup.contramap[String](x => x)
+          )
+
+  val lstOptionsTypesDoctos =  Map( "ENTRADA" -> "ENTRADA",
+                                    "OFICIO" -> "OFICIO",
+                                    "LISTADO" -> "LISTADO"
+                              )
+
+  val lstOptionsProgramasPresup =  Map( "INSABI" -> "INSABI",
+                                        "RAMO12" -> "RAMO12",
+                                        "RAMO33" -> "RAMO33",
+                                        "DESCONOCIDO" -> "DESCONOCIDO",
+                                        "M2-CUOTA" -> "M2 - CUOTA SOCIAL Y APORTACION SOLIDARIA FEDERAL",
+                                        "DONACION" -> "DONACION",
+                                        "TRANSFERENCIA" -> "TRANSFERENCIA",
+                                        "PROGRAMA_243" -> "PROGRAMA_243",
+                                        "PROGRAMA_300" -> "PROGRAMA_300",
+                                        "PROGRAMA_305" -> "PROGRAMA_305",
+                                    )
+
+  /*val observOnDomUnmountFrmInputs = colibri.Observer.create[dom.Element] { elem =>
+        println("It is going to Unmount the dom for FrmInputs")
+        repoDocument.eventDocument.cancelPublishOnEventDocument.cancel()
+  }*/
+
+  //val onDomUnmountFrmInputs = SyncIO(onDomUnmount.transformLifted((elem: Observable[dom.Element]) => elem)--> observOnDomUnmountFrmInputs)
+
+  def manageElements() =  div(
+            managedElement { elem => repoDocument.obsMainItem.subscribe(hdlMainItem) },
+            managedElement { elem => repoDocument.obsIsNew.subscribe(hdlNew) },
+            managedElement { elem => repoDocument.obsProcessSideEffects.subscribe(hdlProcessingSideEffects) },
+            managedElement { elem => repoDocument.obsShowGrid.subscribe(hdlShowGrid) }
+      )
+
+  def render = div(width := "900px",
+         div(id := "pageForm", width := "650px",
+            hdlProcessingSideEffects.map ( div ( clear.both, cls := "processingSideEffects", _ )),
+            div(cls := "inner-shadow", sp("Entradas de Productos", width := "100px", paddingRight := "10px")),
+            connectOtherComponents,
+            manageElements(),
+            div(cls := "groupControls",
+                div ( clear.both, display.block,
+                  cmpInputNumber("Ejercicio", hdlFiscalPeriod, VDomModifier(width:="40px"), Some(VDomModifier(onChangingId))),
+                  cmpDate(hdlDateInputs),
+                  cmpCombo("Tipo Docto.", hdlTypeDocto, lst = lstOptionsTypesDoctos,
+                                    itemSelected = item.type_document, Some(stylesCombo)
+                  ),
+                  cmpCombo("Programa Presup.", hdlProgramaPresu, lst = lstOptionsProgramasPresup,
+                                    itemSelected = item.type_document, Some(stylesCombo)
+                  ),
+                ),
+                div ( clear.both, display.block,
+                      cmpInput("Folio", hdlFolio, VDomModifier(width:="70px"), Some(VDomModifier(onChangingId, txtFolioOnDomMount))),
+                ),
+                div( clear.both, display.block,
+                      cmpInput("Id Area", hdlIdArea, VDomModifier(vdomTxt, width:="38px", textAlign := "justify"), None),
+                 ),
+                div(  clear.both, display.block,
+                      cmpInput("Observaciones", hdlObservacion, VDomModifier(vdomTxt, width:="150px", textAlign := "justify"), None)
+                ),
+                menuButtons,
+                hdlShowGrid.map { show =>
+                  println(s" en el hdlShowGrid $show")
+                  if (show) div(frmLstItems.render) else div("¡No hay documento activo!")
+                }
+                //frmLstItems.render
+            ),
+          //onDomUnmountFrmInputs
+        )
+    )
+}

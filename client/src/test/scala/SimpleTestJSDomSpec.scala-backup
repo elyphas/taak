@@ -1,0 +1,38 @@
+package client_testear
+
+import outwatch._
+import outwatch.dsl._
+import cats.effect.IO
+
+import org.scalajs.dom._
+
+import client_testear.Deprecated.IgnoreWarnings.initEvent
+
+//import outwatch.Deprecated.IgnoreWarnings.initEvent
+
+//class CQuotationSpec extends FlatSpec with Matchers with ScalaFutures {
+class ClientComparative extends JSDomSpec  {
+
+  "txt in frmComparative" should "contain a string" in {
+      val message = "Hello World!"
+
+      val ver = div( label( id:="lblFolio"), input( id := "txtFolio", "1874" ) )
+
+      OutWatch.renderInto[ IO ]("#root", ver ).unsafeRunSync( )
+
+      val existe = document.getElementById("txtFolio")
+
+      println("Vamos a imprimir la etiqueta    !!!!!!   ")
+      println ( existe.textContent )
+
+      val event = document.createEvent("Events")
+      initEvent(event)("click", canBubbleArg = true, cancelableArg = false)
+      existe.dispatchEvent(event)
+
+      //document.getElementById("txtFolio").dispatchEvent(event)
+
+      document.body.innerHTML.contains(message) shouldBe true
+
+    }
+
+}

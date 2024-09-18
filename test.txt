@@ -1,0 +1,17 @@
+Cuando se etiqueta y solo un test etiquetado se requiere ejecutar: 
+client/test:testOnly -- -n “GetTenderers”
+
+Cuando se quiere ejecutar un archivo test.
+server/testOnly *CReporteAlfonsoDoobieSpec
+
+---------
+
+import org.scalatest.{FlatSpec, Matchers, Tag}
+
+object GetClaveTest extends Tag("GetClaveTest")
+
+"Get clave articulo" should "last clave" taggedAs GetClaveTest  in {
+
+testOnly -- -n "GetClaveTest"
+
+

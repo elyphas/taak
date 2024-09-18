@@ -1,0 +1,5 @@
+[0m[[0m[33mwarn[0m] [0m[0m/home/elyphas/Prjs/taak/client/src/main/scala/menu/Menu.scala:90:76: match may not be exhaustive.[0m
+[0m[[0m[33mwarn[0m] [0m[0mIt would fail on the following inputs: ArticuloMenu, CatalogMenu, DocumentEntityMenu, DocumentRequisitionMenu, LogginMenu, StocksMenu, TypeDoctoMenu, UserMenu, WorkWithFilesMenu[0m
+[0m[[0m[33mwarn[0m] [0m[0m  private def renderRouter: Observable[Observable[VNode]] = hashRouter map {[0m
+[0m[[0m[33mwarn[0m] [0m[0m                                                                           ^[0m
+[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m

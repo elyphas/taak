@@ -1,0 +1,49 @@
+package manik1.store
+
+import java.util.{Calendar, Date}
+import scala.scalajs.js.{Date => jsDate}
+
+import outwatch.util.{Reducer, Store}
+import monix.execution.Scheduler.Implicits.global
+import cats.effect.IO
+import monix.reactive.Observable
+import spatutorial.shared.{LstItems, QryDetallePedido, QryPedidoGralData}
+//import spatutorial.shared.processtypes.ViewProceso
+import spatutorial.shared.comparativostypes.ViewProcess
+
+class StoreApp {
+
+  //val calendar: Calendar = Calendar.getInstance
+
+  def today = new jsDate
+
+  //calendar.setTime(today)
+  //def year = calendar.get(Calendar.YEAR)
+
+  def year = today.getFullYear()
+
+  def newItem = ViewProcess(ejercicio = year.toInt, ejercicio_presupuesto = year.toInt)
+
+  sealed trait ActionsStore
+  case object Clean extends ActionsStore
+  case object Search extends ActionsStore
+
+  case class UpdategralDataPedido(gralDataPedido: QryPedidoGralData) extends ActionsStore
+  case class UpdategralDataProceso(gralData: ViewProcess) extends ActionsStore
+  case class UpdatetipoDoctoSelected(tipoDoctoSelected: String) extends ActionsStore
+  case class UpdateLstItems(lst: LstItems[QryDetallePedido]) extends ActionsStore
+
+  case class State( gralDataProceso: ViewProcess = newItem,
+                    gralDataPedido: QryPedidoGralData = QryPedidoGralData(),
+                    //tiposDoctos: Seq[TipoDocumento] = Seq.empty[TipoDocumento],
+                    lstItems: LstItems[QryDetallePedido] = LstItems(List.empty[QryDetallePedido])
+                  )
+
+  val reduce: Reducer[ActionsStore, State] = Reducer{
+      case (s, Clean) => s
+  }
+
+  val initState = State()
+  val store = Store.create[IO](Clean, initState, reduce).unsafeRunSync()
+
+}

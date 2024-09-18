@@ -1,0 +1,9 @@
+package manik1.store
+
+import cats.effect.IO
+import outwatch.util.{Store, Reducer}
+
+trait StoreBase {
+
+
+}

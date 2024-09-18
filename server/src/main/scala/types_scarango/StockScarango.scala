@@ -1,0 +1,267 @@
+package types_scarango
+
+import com.outr.arango.{Document, DocumentModel, Id, Index}
+import com.outr.arango.Field
+
+import com.outr.arango.DocumentRef
+import fabric.rw._ //{ReaderWriter, ccRW}
+
+import java.text.SimpleDateFormat
+import java.util.Date
+
+import shared.Stock
+
+case class StockScarango  (
+        entidad: String,
+        area: String,
+        key_item: String,
+        description_item: String,
+        measure_unit: String,
+        presentation: Option[Int],
+        pack_unit_measure: Option[String],
+        partida: Option[String],
+        max: Option[Int],
+        min: Option[Int],
+        stock: Int,
+        _id: Id[StockScarango] = StockScarango.id()
+) extends Document[StockScarango]
+
+object StockScarango extends DocumentModel[StockScarango] {
+
+  override implicit val rw: RW[StockScarango] = RW.gen
+
+  override def indexes: List[Index] = Nil
+
+  override val collectionName: String = "tbl_stocks"
+
+  def ref_tblstocks: DocumentRef[StockScarango, StockScarango.type] = DocumentRef(this, Some("ref_tblstocks"))
+
+  //override val serialization: Serialization[StockScarango] = Serialization.auto[StockScarango]
+
+}
+
+case class ClavesXPieza (
+      entidad: Option[String],
+      id_area: Option[String],
+      cve_articulo: String,
+      presentacion: Double
+)
+
+object ClavesXPieza {
+  def apply(
+              entidad: Option[String] = None,
+              id_area: Option[String] = None,
+              cve_articulo: String = "",
+              presentacion: Double = 0.0
+          ): ClavesXPieza = new ClavesXPieza(
+                  entidad = entidad,
+                  id_area = id_area,
+                  cve_articulo = cve_articulo,
+                  presentacion = presentacion
+          )
+
+  def toClavesXPieza(item: ClavesXPiezaScarango) = ClavesXPieza (
+                          entidad = item.entidad,
+                          id_area = item.id_area,
+                          cve_articulo = item.cve_articulo,
+                          presentacion = item.presentacion
+                  )
+
+}
+
+case class ClavesXPiezaScarango(
+          entidad: Option[String],
+          id_area: Option[String],
+          cve_articulo: String,
+          presentacion: Double,
+          _id: Id[ClavesXPiezaScarango] = ClavesXPiezaScarango.id()
+) extends Document[ClavesXPiezaScarango]
+
+object ClavesXPiezaScarango extends DocumentModel[ClavesXPiezaScarango] {
+
+  override implicit val rw: RW[ClavesXPiezaScarango] = RW.gen
+
+  override def indexes: List[Index] = Nil
+
+  val cve_articulo: Field[String] = field("cve_articulo")
+
+  override val collectionName: String = "tbl_claves_por_pieza"
+
+  def ref: DocumentRef[ClavesXPiezaScarango, ClavesXPiezaScarango.type] = DocumentRef(this, Some("c"))
+
+  //override val serialization: Serialization[ClavesXPiezaScarango] = Serialization.auto[ClavesXPiezaScarango]
+
+  def createId(item: Stock) = item.entidad + "-" + item.area + "-" + item.key_item
+
+  def toScarango(item: Stock) = {
+    val identity = item.key_item
+    StockScarango(
+      entidad = item.entidad,
+      area = item.area,
+      key_item = item.key_item,
+      description_item = item.description_item,
+      measure_unit = item.measure_unit,
+      presentation = item.presentation,
+      pack_unit_measure = item.pack_unit_measure,
+      //amount = item.amount,
+      partida = item.partida,
+      max = item.max,
+      min = item.min,
+      stock = item.stock,
+      _id = StockScarango.id(identity)
+    )
+  }
+
+  def toNative(item: StockScarango) =
+    Stock (
+      entidad = item.entidad,
+      area = item.area,
+      key_item = item.key_item,
+      description_item = item.description_item,
+      measure_unit = item.measure_unit,
+      presentation = item.presentation,
+      pack_unit_measure = item.pack_unit_measure,
+      partida = item.partida,
+      max = item.max,
+      min = item.min,
+      stock = item.stock//amount = item.amount
+    )
+
+  /**def fromItemRecipe(item: ItemRecipe): Stock =  Stock (
+    entidad = item.entidad,
+    area = "FARMACIA",  //item.area,
+    key_item = item.key_item,
+    description_item = item.description_item,
+    measure_unit = item.measure_unit,
+    presentation = item.presentation,
+    pack_unit_measure = item.pack_unit_measure,
+  )*/
+}
+
+/*case class Stock (
+                      entidad: String,
+                      area: String,
+                      cve_articulo: String,
+                      descripcion: Option[String],
+                      unidad: String,
+                      presentacion: Option[Int],
+                      unid_med_pres: Option[String],
+                      partida: Option[String],
+                      clave_cabms: Option[String],
+                      cb: Option[Boolean],
+                      iva: Option[Double],
+                      baja: Option[Boolean],
+                      retension_isr: Option[Double],
+                      partida_descripcion: Option[String],
+                      stock: Int
+                    )
+
+object Stock {
+
+  def apply(
+             entidad: String = "",
+             area: String = "",
+             cve_articulo: String = "",
+             descripcion: Option[String] = None,
+             unidad: String = "",
+             presentacion: Option[Int] = None,
+             unid_med_pres: Option[String] = None,
+             partida: Option[String] = None,
+             clave_cabms: Option[String] = None,
+             cb: Option[Boolean] = None,
+             iva: Option[Double] = None,
+             baja: Option[Boolean] = None,
+             retension_isr: Option[Double] = None,
+             partida_descripcion: Option[String] = None,
+             stock: Int = 0
+           ): Stock = new Stock (
+                          entidad = entidad,
+                          area = area,
+                          cve_articulo = cve_articulo,
+                          descripcion = descripcion,
+                          unidad = unidad,
+                          presentacion = presentacion,
+                          unid_med_pres = unid_med_pres,
+                          partida = partida,
+                          clave_cabms = clave_cabms,
+                          cb = cb,
+                          iva = iva,
+                          baja = baja,
+                          retension_isr = retension_isr,
+                          partida_descripcion = partida_descripcion,
+                          stock = stock
+                    )
+
+  def toScarango(item: Articulo): ArticuloScarango = ArticuloScarango(
+                    entidad = item.entidad,
+                    area = item.area,
+                    cve_articulo = item.cve_articulo,
+                    descripcion = item.descripcion,
+                    unidad = item.unidad,
+                    presentacion = item.presentacion,
+                    unid_med_pres = item.unid_med_pres,
+                    partida = item.partida,
+                    clave_cabms = item.clave_cabms,
+                    cb = item.cb,
+                    iva = item.iva,
+                    baja = item.baja,
+                    retension_isr = item.retension_isr,
+                    partida_descripcion = item.partida_descripcion,
+                    stock = item.stock,
+                    _id = ArticuloScarango.id(item.cve_articulo)
+              )
+
+    def fromScarango(item: StockScarango): Stock = Stock(
+            entidad = item.entidad,
+            area = item.area,
+            cve_articulo = item.cve_articulo,
+            descripcion = item.descripcion,
+            unidad = item.unidad,
+            presentacion = item.presentacion,
+            unid_med_pres = item.unid_med_pres,
+            partida = item.partida,
+            clave_cabms = item.clave_cabms,
+            cb = item.cb,
+            iva = item.iva,
+            baja = item.baja,
+            retension_isr = item.retension_isr,
+            partida_descripcion = item.partida_descripcion,
+            stock = item.stock
+      )
+}
+
+case class StockScarango (
+                              entidad: String = "",
+                              area: String = "",
+                              cve_articulo: String = "",
+                              descripcion: Option[String] = None,
+                              unidad: String = "",
+                              presentacion: Option[Int] = None,
+                              unid_med_pres: Option[String] = None,
+                              partida: Option[String] = None,
+                              clave_cabms: Option[String] = None,
+                              cb: Option[Boolean] = None,
+                              iva: Option[Double] = None,
+                              baja: Option[Boolean] = None,
+                              retension_isr: Option[Double] = None,
+                              partida_descripcion: Option[String] = None,
+                              stock: Int,
+                              _id: Id[StockScarango] = StockScarango.id()
+                            ) extends Document[StockScarango]
+
+object StockScarango extends DocumentModel[StockScarango] {
+
+  val entidad: Field[String] = Field[String]("entidad")
+  val area: Field[String] = Field[String]("area")
+  val cve_articulo: Field[String] = Field[String]("cve_articulo")
+  val stock: Field[Int] = Field[Int]("stock")
+
+  override def indexes: List[Index] = Nil
+
+  override val collectionName: String = "tbl_stocks"
+
+  def ref: DocumentRef[StockScarango, StockScarango.type] = DocumentRef(this, Some("a"))
+
+  override val serialization: Serialization[StockScarango] = Serialization.auto[StockScarango]
+}*/
+

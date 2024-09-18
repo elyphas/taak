@@ -1,0 +1,26 @@
+package types_scarango
+
+import java.util.Date
+import com.outr.arango.{Document, DocumentModel, Field, Id, Index}
+import fabric.rw._ //{ReaderWriter, ccRW}
+
+import java.text.SimpleDateFormat
+
+case class Proveedor(
+      rfc: String,
+      name: String,
+      observation: String,
+      _id: Id[Proveedor] = Proveedor.id()
+) extends Document[Proveedor]
+
+object Proveedor extends DocumentModel[Proveedor] {
+
+    override implicit val rw: RW[Proveedor] = RW.gen
+
+    override def indexes: List[Index] = Nil
+
+    override val collectionName: String = "proveedor"
+
+    //override val serialization: Serialization[Proveedor] = Serialization.auto[Proveedor]
+
+}

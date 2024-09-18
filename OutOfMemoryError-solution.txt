@@ -1,0 +1,3 @@
+Are you running `sbt` from the console? Seems like you are running out of heap space. You can try giving sbt and/or sbt revolver more heap space. To give more heap space to SBT you can do `SBT_OPTS="-Xmx10G -Xms1G" sbt`, which sets the maximum heap to 10gig. If you want to give more heap to the jvm `reStart` starts, do `reStart --- -Xmx10G`
+
+Of course, you can just try both, see if that fixes anything. Also, you need to change the `10G` depending on how much RAM you actually have.

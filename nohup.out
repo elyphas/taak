@@ -1,0 +1,71 @@
+Initializing root user...Hang on...
+2024-06-16T22:51:47Z [8] INFO [a1c60] {syscall} file-descriptors (nofiles) hard limit is 1048576, soft limit is 1048576
+2024-06-16T22:51:47Z [8] INFO [f6e0e] {aql} memory limit per AQL query automatically set to 9840404889 bytes. to modify this value, please adjust the startup option `--query.memory-limit`
+2024-06-16T22:51:47Z [8] INFO [c1b63] {arangosearch} ArangoSearch maintenance: [3..3] commit thread(s), [3..3] consolidation thread(s). ArangoSearch execution parallel threads limit: 40
+2024-06-16T22:51:47Z [8] INFO [7da27] {startup} server will now shut down due to upgrade, database initialization or admin restoration.
+Initializing database...Hang on...
+Database initialized...Starting System...
+2024-06-16T22:51:49Z [1] INFO [e52b0] {general} ArangoDB 3.12.0-2 [linux] 64bit, using jemalloc, build refs/tags/v3.12.0.2 7a26266a5f0, VPack 0.2.1, RocksDB 7.2.0, ICU 64.2, V8 12.1.165, OpenSSL 3.2.1 30 Jan 2024, build-id: 77024e0ce6ce1bde98b252d4289100c7414f1ef4
+2024-06-16T22:51:49Z [1] INFO [11111] {general} This executable uses the GNU C library (glibc), which is licensed under the GNU Lesser General Public License (LGPL), see https://www.gnu.org/copyleft/lesser.html and https://www.gnu.org/licenses/gpl.html
+2024-06-16T22:51:49Z [1] INFO [a1c60] {syscall} file-descriptors (nofiles) hard limit is 1048576, soft limit is 1048576
+2024-06-16T22:51:49Z [1] INFO [75ddc] {general} detected operating system: Linux version 6.5.0-35-generic (buildd@lcy02-amd64-079) (x86_64-linux-gnu-gcc-12 (Ubuntu 12.3.0-1ubuntu1~22.04) 12.3.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #35~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Tue May  7 09:00:52 UTC 2
+2024-06-16T22:51:49Z [1] INFO [25362] {memory} Available physical memory: 16400674816 bytes, available cores: 20
+2024-06-16T22:51:49Z [1] WARNING [118b0] {memory} maximum number of memory mappings per process is 65530, which seems too low. it is recommended to set it to at least 1280000
+2024-06-16T22:51:49Z [1] WARNING [49528] {memory} execute 'sudo sysctl -w "vm.max_map_count=1280000"'
+2024-06-16T22:51:49Z [1] INFO [3bb7d] {cluster} Starting up with role SINGLE
+2024-06-16T22:51:49Z [1] INFO [f6e0e] {aql} memory limit per AQL query automatically set to 9840404889 bytes. to modify this value, please adjust the startup option `--query.memory-limit`
+2024-06-16T22:51:49Z [1] INFO [fe333] {engines} RocksDB recovery starting, scanning WAL starting from sequence number 0, latest sequence number: 168, active log files: 4, files in archive: 0
+2024-06-16T22:51:49Z [1] INFO [a4ec8] {engines} RocksDB recovery finished, WAL entries scanned: 193, recovery start sequence number: 0, latest WAL sequence number: 168, max tick value found in WAL: 74, last HLC value found in WAL: 1802059968601391104
+2024-06-16T22:51:49Z [1] INFO [c1b63] {arangosearch} ArangoSearch maintenance: [3..3] commit thread(s), [3..3] consolidation thread(s). ArangoSearch execution parallel threads limit: 40
+2024-06-16T22:51:49Z [1] INFO [6ea38] {general} using endpoint 'http+tcp://0.0.0.0:8529' for non-encrypted requests
+2024-06-16T22:51:50Z [1] INFO [cf3f4] {general} ArangoDB (version 3.12.0-2 [linux]) is ready for business. Have fun!
+docker: Error response from daemon: driver failed programming external connectivity on endpoint interesting_kalam (7aa73e89a7be5585056f397a0ab84c617bf4dbb671061c1025bf1b2b88816477): Bind for 0.0.0.0:8529 failed: port is already allocated.
+time="2024-06-16T16:52:20-06:00" level=error msg="error waiting for container: "
+2024-06-17T00:20:45Z [1] INFO [b4133] {general} SIGTERM received (sender pid 0), beginning shut down sequence
+2024-06-17T00:20:45Z [1] INFO [4bcb9] {general} ArangoDB has been shut down
+Initializing root user...Hang on...
+2024-06-17T22:15:33Z [8] INFO [a1c60] {syscall} file-descriptors (nofiles) hard limit is 1048576, soft limit is 1048576
+2024-06-17T22:15:33Z [8] INFO [f6e0e] {aql} memory limit per AQL query automatically set to 9840407347 bytes. to modify this value, please adjust the startup option `--query.memory-limit`
+2024-06-17T22:15:33Z [8] INFO [c1b63] {arangosearch} ArangoSearch maintenance: [3..3] commit thread(s), [3..3] consolidation thread(s). ArangoSearch execution parallel threads limit: 40
+2024-06-17T22:15:33Z [8] INFO [7da27] {startup} server will now shut down due to upgrade, database initialization or admin restoration.
+Initializing database...Hang on...
+Database initialized...Starting System...
+2024-06-17T22:15:35Z [1] INFO [e52b0] {general} ArangoDB 3.12.0-2 [linux] 64bit, using jemalloc, build refs/tags/v3.12.0.2 7a26266a5f0, VPack 0.2.1, RocksDB 7.2.0, ICU 64.2, V8 12.1.165, OpenSSL 3.2.1 30 Jan 2024, build-id: 77024e0ce6ce1bde98b252d4289100c7414f1ef4
+2024-06-17T22:15:35Z [1] INFO [11111] {general} This executable uses the GNU C library (glibc), which is licensed under the GNU Lesser General Public License (LGPL), see https://www.gnu.org/copyleft/lesser.html and https://www.gnu.org/licenses/gpl.html
+2024-06-17T22:15:35Z [1] INFO [a1c60] {syscall} file-descriptors (nofiles) hard limit is 1048576, soft limit is 1048576
+2024-06-17T22:15:35Z [1] INFO [75ddc] {general} detected operating system: Linux version 6.5.0-35-generic (buildd@lcy02-amd64-079) (x86_64-linux-gnu-gcc-12 (Ubuntu 12.3.0-1ubuntu1~22.04) 12.3.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #35~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Tue May  7 09:00:52 UTC 2
+2024-06-17T22:15:35Z [1] INFO [25362] {memory} Available physical memory: 16400678912 bytes, available cores: 20
+2024-06-17T22:15:35Z [1] WARNING [118b0] {memory} maximum number of memory mappings per process is 65530, which seems too low. it is recommended to set it to at least 1280000
+2024-06-17T22:15:35Z [1] WARNING [49528] {memory} execute 'sudo sysctl -w "vm.max_map_count=1280000"'
+2024-06-17T22:15:35Z [1] INFO [3bb7d] {cluster} Starting up with role SINGLE
+2024-06-17T22:15:35Z [1] INFO [f6e0e] {aql} memory limit per AQL query automatically set to 9840407347 bytes. to modify this value, please adjust the startup option `--query.memory-limit`
+2024-06-17T22:15:35Z [1] INFO [fe333] {engines} RocksDB recovery starting, scanning WAL starting from sequence number 0, latest sequence number: 168, active log files: 4, files in archive: 0
+2024-06-17T22:15:35Z [1] INFO [a4ec8] {engines} RocksDB recovery finished, WAL entries scanned: 193, recovery start sequence number: 0, latest WAL sequence number: 168, max tick value found in WAL: 74, last HLC value found in WAL: 1802148285478076416
+2024-06-17T22:15:35Z [1] INFO [c1b63] {arangosearch} ArangoSearch maintenance: [3..3] commit thread(s), [3..3] consolidation thread(s). ArangoSearch execution parallel threads limit: 40
+2024-06-17T22:15:35Z [1] INFO [6ea38] {general} using endpoint 'http+tcp://0.0.0.0:8529' for non-encrypted requests
+2024-06-17T22:15:35Z [1] INFO [cf3f4] {general} ArangoDB (version 3.12.0-2 [linux]) is ready for business. Have fun!
+2024-06-17T22:16:46Z [1] INFO [b4133] {general} SIGTERM received (sender pid 0), beginning shut down sequence
+2024-06-17T22:16:47Z [1] INFO [4bcb9] {general} ArangoDB has been shut down
+Initializing root user...Hang on...
+2024-06-20T21:47:33Z [8] INFO [a1c60] {syscall} file-descriptors (nofiles) hard limit is 1048576, soft limit is 1048576
+2024-06-20T21:47:33Z [8] INFO [f6e0e] {aql} memory limit per AQL query automatically set to 9840397517 bytes. to modify this value, please adjust the startup option `--query.memory-limit`
+2024-06-20T21:47:33Z [8] INFO [c1b63] {arangosearch} ArangoSearch maintenance: [3..3] commit thread(s), [3..3] consolidation thread(s). ArangoSearch execution parallel threads limit: 40
+2024-06-20T21:47:33Z [8] INFO [7da27] {startup} server will now shut down due to upgrade, database initialization or admin restoration.
+Initializing database...Hang on...
+Database initialized...Starting System...
+2024-06-20T21:47:35Z [1] INFO [e52b0] {general} ArangoDB 3.12.0-2 [linux] 64bit, using jemalloc, build refs/tags/v3.12.0.2 7a26266a5f0, VPack 0.2.1, RocksDB 7.2.0, ICU 64.2, V8 12.1.165, OpenSSL 3.2.1 30 Jan 2024, build-id: 77024e0ce6ce1bde98b252d4289100c7414f1ef4
+2024-06-20T21:47:35Z [1] INFO [11111] {general} This executable uses the GNU C library (glibc), which is licensed under the GNU Lesser General Public License (LGPL), see https://www.gnu.org/copyleft/lesser.html and https://www.gnu.org/licenses/gpl.html
+2024-06-20T21:47:35Z [1] INFO [a1c60] {syscall} file-descriptors (nofiles) hard limit is 1048576, soft limit is 1048576
+2024-06-20T21:47:35Z [1] INFO [75ddc] {general} detected operating system: Linux version 6.5.0-41-generic (buildd@lcy02-amd64-120) (x86_64-linux-gnu-gcc-12 (Ubuntu 12.3.0-1ubuntu1~22.04) 12.3.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #41~22.04.2-Ubuntu SMP PREEMPT_DYNAMIC Mon Jun  3 11:32:55 UTC 2
+2024-06-20T21:47:35Z [1] INFO [25362] {memory} Available physical memory: 16400662528 bytes, available cores: 20
+2024-06-20T21:47:35Z [1] WARNING [118b0] {memory} maximum number of memory mappings per process is 65530, which seems too low. it is recommended to set it to at least 1280000
+2024-06-20T21:47:35Z [1] WARNING [49528] {memory} execute 'sudo sysctl -w "vm.max_map_count=1280000"'
+2024-06-20T21:47:35Z [1] INFO [3bb7d] {cluster} Starting up with role SINGLE
+2024-06-20T21:47:35Z [1] INFO [f6e0e] {aql} memory limit per AQL query automatically set to 9840397517 bytes. to modify this value, please adjust the startup option `--query.memory-limit`
+2024-06-20T21:47:35Z [1] INFO [fe333] {engines} RocksDB recovery starting, scanning WAL starting from sequence number 0, latest sequence number: 168, active log files: 4, files in archive: 0
+2024-06-20T21:47:35Z [1] INFO [a4ec8] {engines} RocksDB recovery finished, WAL entries scanned: 193, recovery start sequence number: 0, latest WAL sequence number: 168, max tick value found in WAL: 74, last HLC value found in WAL: 1802418314786373632
+2024-06-20T21:47:35Z [1] INFO [c1b63] {arangosearch} ArangoSearch maintenance: [3..3] commit thread(s), [3..3] consolidation thread(s). ArangoSearch execution parallel threads limit: 40
+2024-06-20T21:47:35Z [1] INFO [6ea38] {general} using endpoint 'http+tcp://0.0.0.0:8529' for non-encrypted requests
+2024-06-20T21:47:35Z [1] INFO [cf3f4] {general} ArangoDB (version 3.12.0-2 [linux]) is ready for business. Have fun!
+2024-06-20T21:59:39Z [1] INFO [b4133] {general} SIGTERM received (sender pid 0), beginning shut down sequence
+2024-06-20T21:59:40Z [1] INFO [4bcb9] {general} ArangoDB has been shut down

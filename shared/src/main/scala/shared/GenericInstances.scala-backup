@@ -1,0 +1,68 @@
+package shared
+
+//import shared.{Inputs, ItemInput, ItemRecipe, ItemRequisition, Recipe, Requisition, TypeDocument, User}
+
+import shared.mytypes.{Recipe, TypeDocument}
+
+trait GenericInstances[Item] {
+        def createInstanceEmpty(): Item
+        def createId(item: Item): String
+}
+
+object GenericInstances {
+
+/*  implicit val itemString = new GenericInstances[String] {
+      def createInstanceEmpty() = ""
+      def createId(item: String) = ""
+  }
+
+  implicit val requisitionDocument = new GenericInstances[Requisition] {
+      def createInstanceEmpty() = Requisition()
+      def createId(item: Requisition) = ""
+  }
+
+  implicit val itemRequisition = new GenericInstances[ItemRequisition] {
+      def createInstanceEmpty() = ItemRequisition()
+      def createId(item: ItemRequisition) = ""
+  }*/
+
+  implicit val recipeDocument: GenericInstances[Recipe] = new GenericInstances[Recipe] {
+    def createInstanceEmpty(): Recipe = Recipe(
+
+    )
+
+    def createId(item: Recipe): String = ""
+  }
+
+/*  implicit val itemRecipe = new GenericInstances[ItemRecipe] {
+      def createInstanceEmpty() = ItemRecipe()
+      def createId(item: ItemRecipe) = ""
+  }
+
+  implicit val inputDocument = new GenericInstances[Inputs] {
+      def createInstanceEmpty() = Inputs()
+      def createId(item: Inputs) = ""
+  }*/
+
+  /*{
+    val dateFormat = (new SimpleDateFormat("dd-MM-yyyy")).format(new Date(item.date))
+    item.user + "-" + item.entidad + "-" + item.id_area + "-" + dateFormat + "-" + item.type_document + "-" + item.fiscal_period + "-" + item.folio
+}*/
+
+  /*  implicit val inputItem = new GenericInstances[ItemInput] {
+      def createInstanceEmpty() = ItemInput()
+      def createId(item: ItemInput) = ""
+  }
+
+  implicit val user = new GenericInstances[User] {
+    def createInstanceEmpty() = User()
+    def createId(item: User) = ""
+  }
+*/
+  implicit val typeDocument: GenericInstances[TypeDocument] = new GenericInstances[TypeDocument] {
+    def createInstanceEmpty(): TypeDocument = TypeDocument()
+
+    def createId(item: TypeDocument): String = ""
+  }
+
+}

@@ -1,0 +1,96 @@
+package scarango_catalogs
+
+import cats._
+import cats.implicits._
+import com.outr.arango.transaction.{Transaction, TransactionStatus}
+import com.outr.arango.api.{OperationType, WALOperation, WALOperations}
+import com.outr.arango.{ArangoDB, Credentials, DatabaseState}
+import com.outr.arango.{IndexType, Serialization}
+import com.outr.arango._
+import com.outr.arango.query._
+import io.youi.http.Headers
+
+import scala.concurrent._
+import scala.concurrent.duration._
+import scala.language.postfixOps
+import io.circe._
+import io.circe.generic.auto._
+import io.circe.syntax._
+
+import java.util.Date
+import type_event.EventsDB._
+
+import java.text.SimpleDateFormat
+import types_scarango.{Requisition, RequisitionScarango, ItemRequisitionScarango}
+
+import scala.util.{Failure, Success}
+
+class CRequisitionScarango {
+
+    implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
+
+    def condic(item: Requisition) =
+        aqlu"doc.fiscal_period == ${item.fiscal_period} && doc.folio == ${item.folio}"
+
+    def byId(item: Requisition): Future[Either[String, (Requisition, EventsDBResult)]] = {
+
+                val r = for {
+                            res <- database.tbl_requisition.get(RequisitionScarango.id(Requisition.createId(item)))
+                        } yield {
+                            res match {
+                                case Some(x) => Right(Requisition.toRequisition(x), FoundDB())
+                                case None => Right(Requisition(), NotFoundDB())
+                            }
+                        }
+                r.transformWith {
+                    case Success(value) => Future.successful ( value )
+                    case Failure ( error ) => Future.successful(Left(error.getMessage + "--" + error.getLocalizedMessage + "--" + error.getCause.getMessage))
+                }
+
+    }
+
+    def delete(item: Requisition) = {
+        val r = database.tbl_requisition.deleteOne(RequisitionScarango.id(Requisition.createId(item))).map { x =>
+            (item, DeletedDB()).asRight[String]
+        }
+        r.transformWith {
+            case Success(value) => Future.successful ( value )
+            case Failure ( error ) => Future.successful(Left(error.getMessage + "--" + error.getLocalizedMessage + "--" + error.getCause.getMessage))
+        }
+    }
+
+    def upsert(item: Requisition): Future[Either[String, (Requisition, EventsDBResult)]] = {
+        val r = database.tbl_requisition.upsertOne(Requisition.toRequisitionScarango(item)).map { x =>
+                ((item, SavedDB())).asRight[String]
+            }
+        r.transformWith {
+            case Success(value) => Future.successful ( value )
+            case Failure ( error ) => Future.successful(Left(error.getMessage + "--" + error.getLocalizedMessage + "--" + error.getCause.getMessage))
+        }
+    }
+
+    def eventOn(item: Requisition, event: EventsDBWillDo) =
+        event match {
+            case FindDB => byId(item)
+            case DeleteDB => delete(item)
+            case InsertDB | UpdateDB => upsert(item)
+            case _ => byId(item)
+        }
+
+    /*def createId(item: Inputs) = item.fiscal_period + "-" + item.folio + "-" + item.type_document + "-" + item.programa_presupuestal
+
+    def toInputsScarango(item: Inputs) = InputsScarango (
+        fiscal_period = item.fiscal_period,
+        folio = item.folio,
+        type_document = item.type_document,
+        programa_presupuestal = item.programa_presupuestal,
+        date = item.date,
+        id_area = item.id_area,
+        area = item.area,
+        users = item.users,
+        observation = item.observation,
+        _id = InputsScarango.id(createId(item))
+    )*/
+
+
+}

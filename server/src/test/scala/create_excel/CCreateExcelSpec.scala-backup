@@ -1,0 +1,53 @@
+package test_create_excel
+
+import org.scalatest.flatspec.AsyncFlatSpec
+import org.scalatest.matchers.should.Matchers
+
+import cats.implicits._
+import cats.data.EitherT
+
+import org.scalatest.Tag
+import org.scalatest.concurrent.ScalaFutures
+
+import cats.effect.unsafe.implicits.global
+
+object CreateExcelSpec extends Tag("CreateExcelSpec")
+
+class CCreateExcelSpec extends AsyncFlatSpec with Matchers with ScalaFutures {
+
+  /**implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
+  val connPostgres = new CMyConnection
+  val report = new CReporte*/
+
+  "excel file " should "be created" taggedAs CreateExcelSpec in {
+
+    println("Debe de estar bien")
+
+    /**val ejercicio = 2023
+
+    val prepareReport = report.general( ejercicio )
+
+    val rows = prepareReport.transact(connPostgres.xa).attempt.map(_.leftMap(_.getMessage))
+
+    val today = new Date
+
+    val ver = for {
+        rs <- EitherT(rows.unsafeToFuture())
+    } yield {
+      val nameFile = "reporte-general" + today.toString + "-" + "-ejercicio-" + ejercicio + ".xlsx"
+      val path = "/home/elyphas/Documentos/" + nameFile
+      val cexcel = new CExcelReporteGral
+      cexcel.create(rs, path)
+      succeed
+    }
+
+    ver.value.map {
+      case Right(value) => succeed
+      case Left(err) => 
+        println(err)
+        fail(err)
+    }*/
+
+  }
+
+}

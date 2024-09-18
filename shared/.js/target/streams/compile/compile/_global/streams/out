@@ -1,0 +1,16 @@
+[0m[[0m[33mwarn[0m] [0m[0m/home/elyphas/Prjs/taak/shared/src/main/scala/types/Recipe.scala:103:27: method getYear in class Date is deprecated[0m
+[0m[[0m[33mwarn[0m] [0m[0m  val currentYear = today.getYear() + 1900[0m
+[0m[[0m[33mwarn[0m] [0m[0m                          ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m/home/elyphas/Prjs/taak/shared/src/main/scala/types/Recipe.scala:202:33: method getDate in class Date is deprecated[0m
+[0m[[0m[33mwarn[0m] [0m[0m        val diaInt = date_valid.getDate[0m
+[0m[[0m[33mwarn[0m] [0m[0m                                ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m/home/elyphas/Prjs/taak/shared/src/main/scala/types/Recipe.scala:205:33: method getMonth in class Date is deprecated[0m
+[0m[[0m[33mwarn[0m] [0m[0m        val mesInt = date_valid.getMonth[0m
+[0m[[0m[33mwarn[0m] [0m[0m                                ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m/home/elyphas/Prjs/taak/shared/src/main/scala/types/Recipe.scala:208:66: method + in class Int is deprecated (since 2.13.0): Adding a number and a String is deprecated. Use the string interpolation `s"$num$str"`[0m
+[0m[[0m[33mwarn[0m] [0m[0m        val dateFormated: String = (date_valid.getYear() + 1900) + "-" + mesStr + "-" + diaStr[0m
+[0m[[0m[33mwarn[0m] [0m[0m                                                                 ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m/home/elyphas/Prjs/taak/shared/src/main/scala/types/Recipe.scala:208:48: method getYear in class Date is deprecated[0m
+[0m[[0m[33mwarn[0m] [0m[0m        val dateFormated: String = (date_valid.getYear() + 1900) + "-" + mesStr + "-" + diaStr[0m
+[0m[[0m[33mwarn[0m] [0m[0m                                               ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m5 warnings found[0m

@@ -1,0 +1,188 @@
+package testing_doobie
+
+import monix.execution.ExecutionModel.SynchronousExecution
+import monix.execution.Scheduler
+import monix.execution.schedulers.TrampolineScheduler
+
+import org.scalatest.concurrent.ScalaFutures
+
+import org.scalatest.{FlatSpec, Matchers, Tag}
+
+import cats.implicits._
+import doobie.implicits._
+
+import doobie.Fragment
+
+import doobie_classes.CMyConnection
+import manik1.manik1.shared.EventsDoobie._
+
+import spatutorial.shared.Requisition
+import doobie_classes.CRequisition
+
+object SeekRequisitionSpec extends Tag("SeekRequisitionSpec")
+object SelectRequisitionSpec extends Tag("SelectRequisitionSpec")
+object UpdateRequisitionSpec extends Tag("UpdateRequisitionSpec")
+object InsertRequisitionSpec extends Tag("InsertRequisitionSpec")
+object DeleteRequisitionSpec extends Tag("DeleteRequisitionSpec")
+object EventsRequisitionSpec extends Tag("EventsRequisitionSpec")
+
+class CRequisitionSpec extends FlatSpec with Matchers with ScalaFutures {
+
+  implicit val scheduler = TrampolineScheduler(Scheduler.global, SynchronousExecution)
+
+   val myConnection = new CMyConnection
+
+  "Select Requisition from table" must "be Selected" taggedAs(SelectRequisitionSpec) in {
+      val ctest = new CRequisition
+
+      println("************************   Selecting *******************************")
+      
+      val item = Requisition(
+                    pFiscal_period = 2020,
+                    pFolio = "7777",
+                    pDate = new java.util.Date,
+                    pId_area = None,
+                    pArea = None,
+                    pUsers = "pharmacy",
+                    pObservation = Some("pruebas"))
+
+      val cond = Some(fr"fiscal_period = ${item.fiscal_period}" ++ 
+                      Fragment.const("and") ++ fr"folio = ${item.folio}")
+
+      val result = ctest.byId(cond)
+                        .transact(myConnection.xa)
+                        .attempt.map(_.leftMap(_.getMessage)).unsafeToFuture
+
+      println(result)
+  }
+
+  "Update record from table" must "be updated" taggedAs(UpdateRequisitionSpec) in {
+
+      val item = Requisition(
+                    pFiscal_period = 2020,
+                    pFolio = "7777",
+                    pDate = new java.util.Date,
+                    pId_area = None,
+                    pArea = None,
+                    pUsers = "pharmacy",
+                    pObservation = Some("pruebas")
+                )
+
+      val ctest = new CRequisition
+
+      /*val ver = ctest .event(item, UpdateDoobie) .transact(myConnection.xa) .attempt.map(_.leftMap(_.getMessage)) .unsafeRunSync 
+      println(ver)*/
+  }
+  
+  "Insert record into table" must "be inserted" taggedAs(InsertRequisitionSpec) in {
+
+      val item = Requisition(
+                    pFiscal_period = 2020,
+                    pFolio = "7777",
+                    pDate = new java.util.Date,
+                    pId_area = None,
+                    pArea = None,
+                    pUsers = "pharmacy",
+                    pObservation = Some("pruebas")
+                 )
+
+      val ctest = new CRequisition
+
+
+      val result = ctest
+                        .insert(item)
+                        .update
+                        .run
+                        .transact(myConnection.xa)
+                        .attempt.map(_.leftMap(_.getMessage)) .unsafeRunSync
+      println(result)
+
+  }
+
+
+  "Update record into table" must "be updated" taggedAs(UpdateRequisitionSpec) in {
+
+      val item = Requisition(
+                    pFiscal_period = 2020,
+                    pFolio = "7777",
+                    pDate = new java.util.Date,
+                    pId_area = None,
+                    pArea = None,
+                    pUsers = "pharmacy",
+                    pObservation = Some("pruebas modificado")
+                 )
+
+      val ctest = new CRequisition
+
+
+      val result = ctest
+                        .update(item)
+                        .update
+                        .run
+                        .transact(myConnection.xa)
+                        .attempt.map(_.leftMap(_.getMessage)) .unsafeRunSync
+      println(result)
+
+  }
+
+
+  "Delete record from table" must "be deleted" taggedAs(DeleteRequisitionSpec) in {
+      val item = Requisition(
+                    pFiscal_period = 2020,
+                    pFolio = "7777", 
+                    pDate = new java.util.Date,
+                    pId_area = None,
+                    pArea = None,
+                    pUsers = "pharmacy",
+                    pObservation = Some("pruebas"))
+
+      val ctest = new CRequisition
+
+      val result = ctest
+                        .delete(item)
+                        .update
+                        .run
+                        .transact(myConnection.xa)
+                        .attempt.map(_.leftMap(_.getMessage)) .unsafeRunSync
+      println(result)
+  }
+
+  "Search for Item with byIdItem" must "be found" taggedAs(SeekRequisitionSpec) in {
+      val item = Requisition(
+                    pFiscal_period = 2020,
+                    pFolio = "7777",
+                    pDate = new java.util.Date,
+                    pId_area = None,
+                    pArea = None,
+                    pUsers = "pharmacy",
+                    pObservation = Some("pruebas")
+                )
+      val ctest = new CRequisition
+      /*val ver = ctest .event(item, FindDoobie) .transact(myConnection.xa) .attempt.map(_.leftMap(_.getMessage)) .unsafeRunSync
+      println(ver)*/
+  }
+
+
+  "Testing event method" must "be do differente event" taggedAs(EventsRequisitionSpec) in {
+      val ctable = new CRequisition
+      val event: EventsDoobieWillDo = InsertDoobie 
+      val item = Requisition(
+                    pFiscal_period = 2020,
+                    pFolio = "7777",
+                    pDate = new java.util.Date,
+                    pId_area = None,
+                    pArea = None,
+                    pUsers = "pharmacy",
+                    pObservation = Some("pruebas"))
+
+      val result = event match {
+          case InsertDoobie =>
+                for {
+                    _ <- ctable.insert(item).update.run
+                } yield (item, SavedDoobie(): EventsDoobieResult)
+      }
+      val didRun = result.transact(myConnection.xa).attempt.map(_.leftMap(_.getMessage)).unsafeToFuture
+      println(didRun)
+  }
+
+}

@@ -1,0 +1,154 @@
+package manik1.modules.user
+
+import boopickle.Default._
+import cats.effect.SyncIO
+import spatutorial.shared.{Father, ItemRecipe, Recipe, TypeDocument, User}
+import org.scalajs.dom.html
+import org.scalajs.dom.raw.MouseEvent
+import org.scalajs.dom.window.{alert, confirm}
+import outwatch_components.inputs._
+import cats.implicits._
+
+import scala.concurrent.duration._
+import monix.execution.Scheduler.Implicits.global
+import monix.execution.{Ack, Cancelable}
+import monix.reactive.{Observable, Observer}
+import colibri.ext.monix._
+import colibri.ext.monix.ops._
+import outwatch.reactive.handlers.monix._
+import outwatch._
+import outwatch.dsl.{span => sp, _}
+
+import manik1.manik1.shared.EventsDB._
+//import encoder_json.types._
+import manik1.modules.FrmMainItem
+import monix.execution.Ack.Continue
+import org.scalajs.dom
+
+import scala.collection.immutable.ListMap
+import manik1.repositories._
+
+import java.nio.ByteBuffer
+import manik1.manik1.shared.GenericInstances
+import manik1.services.WSMyCelium
+import mycelium.client.SendType
+
+import scala.concurrent.Future
+
+class FrmUser(implicit
+                        repoDocument: RepositoryDocument[User],
+              ) extends FrmMainItem[User] {
+
+  val mainItem: User = User()
+
+  val hdlMainItem = Handler.create[User](mainItem).unsafeRunSync()
+  hdlMainItem.onNext(mainItem)
+
+  val hdlUser = hdlMainItem.lens[String](mainItem)(_.user)((state, newState) => state.copy(user = newState))
+  val cancelableUser = hdlUser.connect()
+
+  val getMainItem = (hdlMainItem: Observable[User], hdlNew: Observable [Boolean])
+                            .parMapN { case (item: User, isNew: Boolean) =>
+                                    (item, isNew)
+                             }
+
+  val onNew = colibri.Observer.combineVaried (
+                  colibri.Observer.combineVaried (
+                      hdlMainItem.contramap[String]{ x => mainItem.copy(user = "") },
+                      hdlProcessingSideEffects.contramap[String](x => "Nuevo")
+                  ),
+                  hdlNew.contramap[String]( x => true )
+              )
+
+  def menuButtons = div( cls := "groupControls", marginTop := "10px",
+    button( id := "cmdSave", "Guardar", cls := "myButton",
+       onClick
+           .transformLifted { e: monix.reactive.Observable[MouseEvent] =>
+           e
+           .withLatestFrom (getMainItem)
+           { case (event@_, (item, isNew)) =>
+                (item, (if (isNew) InsertDB else UpdateDB))
+           }        
+       } --> repoDocument.eventDocument,
+    ),
+
+    button( id := "cmdSearch", "Buscar", cls := "myButton",
+       onClick.transformLifted { e: Observable[MouseEvent] =>
+           e.withLatestFrom(getMainItem) { case (event@_, (item, isNew)) =>
+               (item, FindDB)
+           }
+       } --> repoDocument.eventDocument,
+    ),
+    button( id := "cmdDelete", "Borrar", cls := "myButton",
+       onClick.transformLifted { e: Observable[MouseEvent] =>
+           e
+             .filter { x => confirm("¿Desea eliminar el registro?") }
+             .withLatestFrom(getMainItem){ case (event@_, (item, isNew)) =>
+                 (item, DeleteDB)
+              }
+       } --> repoDocument.eventDocument,
+    ),
+
+    button( id := "cmdNew", "Nuevo", cls := "myButton",
+              onClick.use("") --> onNew,
+    )
+  )
+
+  def onInputToObservable(e: Observable[String], event: EventsDBWillDo) = e
+                              .distinctUntilChanged
+                              .withLatestFrom(
+                                    getMainItem.filter { case (item, isNew) =>
+                                        item.user.length > 0
+                                    }
+                              ) { case (txt@_, (item, isNew)) =>
+                                    (item, event)
+                              }
+
+  val onInputElementsId = onInput
+                              .value
+                              .debounce(800 milliseconds)
+                              .transformLifted { e: Observable[String] =>
+                                  onInputToObservable(e, FindDB)
+                                    .onErrorRecoverWith { ex =>
+                                        println("Error on onInputElementsId ****************")
+                                        onInputToObservable(e, FindDB)
+                                    }
+                              }
+
+  val onChangingId = SyncIO (
+        onInputElementsId --> repoDocument.eventDocument
+  )
+
+  val vdomTxt = VDomModifier(width := "60px", textAlign := "center")
+
+  val stylesXLarger = VDomModifier(width := "100px")
+
+  val obsOnDomMount = colibri.Observer.create[dom.Element] { elem =>
+          elem.asInstanceOf[html.Input].focus
+  }
+
+  val txtUserOnDomMount = SyncIO(
+                              onDomMount
+                                  .transformLifted (
+                                      (elem: Observable[dom.Element]) => elem
+                                  )--> obsOnDomMount
+  )
+
+  def render = div(width := "900px",
+       div(id := "pageForm", width := "650px",
+          div(cls := "inner-shadow", sp("Usuarios", paddingRight := "5px" ),
+              processingSideEffects
+          ),
+          managedElement { elem =>
+              repoDocument.obsProcessSideEffects.subscribe(hdlProcessingSideEffects)
+          },
+           managedElement { elem =>
+             repoDocument.obsIsNew.subscribe(hdlNew)
+           },
+          div(cls := "groupControls",
+              cmpInput("Usuario", hdlUser, VDomModifier(vdomTxt, width:="100px", textAlign := "justify"), None),
+              menuButtons
+          )
+        )
+  )
+}

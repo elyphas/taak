@@ -1,0 +1,53 @@
+package testing_ws_catalogs_scarango
+
+import cats.data.EitherT
+import cats._
+import cats.implicits._
+import example.CInputs
+
+import scala.concurrent.ExecutionContext.global
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.Tag
+
+import scala.concurrent.Future
+import scala.util.{Failure, Success}
+import com.typesafe.config.ConfigFactory
+
+import java.text.DateFormatSymbols
+
+object SaveInputsToExcelSpec extends Tag("SaveInputsToExcelSpec")
+
+class CInputsSpec extends AnyFlatSpec with Matchers {
+    implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
+
+  "Get the outpus" should "shows the outputs" taggedAs (SaveInputsToExcelSpec) in {
+
+      println("Testing the Inputs Spec **************************************************")
+
+      val ctest = new CInputs
+
+      val year: Int = ConfigFactory.load().getInt("year")          //2022
+      //val month: Int = 7    //Mes del que se va ha ser el corte.
+      val month: Int = ConfigFactory.load().getInt("month")    //8    /***   Mes del que se va ha ser el corte.        */
+      val monthFormat = new DateFormatSymbols().getMonths()( month - 1 )
+
+      //val lastMonth = "JUNIO"
+      //val curMonth = "JULIO"
+
+      val result = for {
+          xx <- EitherT(ctest.getDetailsInputs(year, month))
+          msg <- EitherT(ctest.saveToExcel(monthFormat, xx._1))
+      } yield {
+          println(msg)
+          assert( true )
+      }
+
+      result.value.transformWith{
+          case Success(value) => Future.successful(println("Lo logro con exito"))
+          case Failure(exception) =>
+              println(exception.getMessage + "-" + exception.getLocalizedMessage)
+              Future.successful( println(exception.getMessage + "-" + exception.getLocalizedMessage))
+      }
+  }
+}

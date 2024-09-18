@@ -1,0 +1,73 @@
+package client_testear
+
+import java.util.Date
+import outwatch._
+
+import cats.effect.{IO, SyncIO}
+import org.scalajs.dom.{CustomEvent, Element, Event, document, html}
+
+import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpecLike
+import matchers.should._
+
+/*import spatutorial.shared.{Recipe}
+
+import monix.execution.Scheduler.Implicits.global
+import monix.execution.Cancelable
+import monix.reactive.Observable
+import colibri.ext.monix._
+import colibri.ext.monix.ops._
+import colibri._
+import outwatch.reactive.handlers.monix._*/
+
+import scala.concurrent.Await
+import scala.concurrent.duration._
+import manik1.modules.pharmacy.FrmDocument
+
+import manik1.modules.pharmacy.ListItemsRepositoryRecipe    //ListItemsRepository
+
+//import teotl.typeclass.show._
+
+object CheckarFrmDocumentTest extends Tag("CheckarFrmDocumentTest")
+
+class CFrmDocumentSpec extends JSDomSpec with AnyFlatSpecLike with Matchers {
+
+  /*def sendEvent(elem: Element, eventType: String) = {
+      val event = document.createEvent("Events")
+      initEvent(event)(eventType, canBubbleArg = true, cancelableArg = false)
+      elem.dispatchEvent(event)
+  }*/
+
+  /*val click = IO {
+    val event = document.createEvent("Events")
+    initEvent(event)("click", canBubbleArg = false, cancelableArg = true) //initEvent(event)("input", canBubbleArg = false, cancelableArg = true)
+    event
+  }*/
+
+  "testing handler" should "Testing FrmDocument" taggedAs(CheckarFrmDocumentTest) in {
+
+    println ( "Changos no pasa nada!!!!!!!!!!!!!!!!!!!!!!!! " )
+
+    implicit val repo = new ListItemsRepositoryRecipe //ListItemsRepository
+
+    val frm = new FrmDocument()
+
+    frm.hdlRecipe.foreach ( println )
+    frm.hdlFiscalPeriod.onNext(2020)
+    frm.hdlFolio.onNext("DD2222")
+    frm.hdlDateOutput.onNext( new Date().getTime.toLong)
+    frm.hdlIdArea.onNext("03")
+    frm.hdlArea.onNext("JURISDICCION 03 CENTRO")
+
+    frm.hdlRecipe.foreach { d => 
+        println( d)
+    }
+
+    for {
+      _ <- OutWatch.renderInto[IO]("#root", frm.render)
+    } yield {
+      succeed
+    }
+  }
+
+}

@@ -1,0 +1,85 @@
+package testing_ws_catalogs_scarango
+
+import monix.execution.ExecutionModel.SynchronousExecution
+import monix.execution.Scheduler
+import monix.execution.schedulers.TrampolineScheduler
+
+import org.scalatest.concurrent.{Eventually, ScalaFutures}
+
+import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, BeforeAndAfterEach}
+import org.scalatest.flatspec.AsyncFlatSpec
+
+import org.scalatest.matchers.must.Matchers.be
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import profig.Profig
+
+import scala.language.postfixOps
+import scala.concurrent.{Await, Future}
+import scala.util.Try
+import example.database
+
+import scala.concurrent.duration._
+import org.scalatest.time.{Millis, Seconds, Span}
+
+trait InitializeDBSpec extends AsyncFlatSpec
+                          with ScalaFutures
+                          with BeforeAndAfterAll
+                          with Eventually
+                  {
+
+  /**       Notes         #############
+   *
+   * eventually is mostly intended for integration testing.
+   * whenReady is for unit testing
+   * */
+
+  implicit val scheduler = TrampolineScheduler(Scheduler.global, SynchronousExecution)
+
+  /*override def beforeAll() = {
+      whenReady {
+          println("Inside the whenReady ******************* ")
+          implicit val defaultPatience = PatienceConfig(timeout = Span(30, Seconds), interval = Span(800, Millis))
+          val ver = database.init()
+          println("termino de inicializar la database!!     ******************* ")
+          ver
+      }{ x =>
+          println("***  Se inicializo la base de datos !!!!!!**")
+      }
+  }*/
+
+  override def afterAll(): Unit = {
+    println("******** Changos terminando todo los test !!!!!!!!!!!!!!!")
+    println("Pendiente cerrar conexiones !!!!")
+  }
+
+  /*
+  implicit class PimpedFuture[T](self: Future[T]) {
+    def toTry: Try[T] = Try(self.futureValue)
+  }
+  override protected def beforeEach(): Unit =  {
+    println("Pasando por el ''beforeEach''''   ")
+    Profig.initConfiguration().map { in => println ( in ) }
+
+    val r = for { _ <- database.init() } yield { println("***  Se inicializo la base de datos !!!!!!**") }
+
+    r.toTry recover {
+      case t: Throwable => println("No se pudo inicializar")
+    } should be a 'success
+
+  }*/
+
+  /*override protected def beforeEach(): Unit =  {
+      println("Pasando por el ''beforeEach''''   ")
+      Profig.initConfiguration().map { in => println ( in ) }
+      val r = for {
+                  _ <- database.init()
+              } yield {
+                  println("***********        Se inicializo la base de datos !!!!!! ****************")
+              }
+
+      r.toTry recover {
+              case t: Throwable => println("No se pudo inicializar")
+      } should be a 'success
+  }*/
+
+}

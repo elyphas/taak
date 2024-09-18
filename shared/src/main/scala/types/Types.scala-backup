@@ -1,0 +1,98 @@
+package spatutorial.shared
+
+case class MsgMycelium(msg: String)
+
+sealed trait Father {
+    val id: String
+    val descripcion: Option[String]
+}
+
+case class TypeDocument(
+   id: String,
+   descripcion: Option[String],
+   observation: Option[String]
+) extends Father
+
+object TypeDocument {
+    def apply = new TypeDocument(id = "", descripcion = None, observation = None)
+}
+
+case class Programa(
+    id: String = "",
+    descripcion: Option[String] = None,
+    destino: Option[String] = None,
+    depto: Option[String] = None,
+    mostrar: Boolean = true,
+    rfc_dependencia: String = "SES890417TX8",
+    nivel: String = "ESTATAL",
+    encargado: Option[String] = None,
+    activo: Boolean = true,
+    fuente_financiamiento: Option[String] = None,
+    fuente_financiamiento_descripcion: Option[String] = None 
+) extends Father
+
+case class Item(
+        id: String = "",
+	description: Option[String] = None,
+	unit: String = "",
+	presentation: Option[Int] = None,
+	unid_med_pres: Option[String] = None,
+	partida: String = "",
+	id_cabms: Option[String] = None,
+	cb: Option[Boolean] = None,
+	iva: Option[Double] = None,
+	baja: Option[Boolean] = None,
+	retension_isr: Option[Double] = None,
+	partida_descripcion: Option[String] = None,
+	use_mode_medication: Option[String] = None,
+) //extends Father
+
+
+final case class Partida (
+              id: String = "",
+              descripcion: Option[String] = None,
+	      observaciones: Option[String] = None,
+	      presupuesto: Option[Double] = None,
+              activo: Option[Boolean] = None) extends Father
+
+case class Presentacion(
+              id: String = "",
+	      descripcion: Option[String] = None,
+	      presentacion: Option[Double] = None,
+	      unidad_present: Option[String] = None) extends Father
+
+case class Usuarios(
+							usuario: String = "",
+							contraseña: String = "",
+							tipo: String = "",
+							nombre: String = "",
+							area: String = "",
+							activo: Boolean = true,
+							nivel: Int = 0
+		)
+
+/*case class Proveedor(
+					id: String = "",
+					descripcion: Option[String] = None,
+					propietario: Option[String] = None,
+					calle: Option[String] = None,
+					colonia: Option[String] = None,
+					delegacion: Option[String] = None,
+					cp: Option[String] = None,
+					ciudad: Option[String] = None,
+					telefonos: Option[String] = None,
+					fax: Option[String] = None,
+					observaciones: Option[String] = None,
+					activo: Boolean = true,
+					elaboro: Option[String] = None,
+					giro: Option[String] = None,
+					descuento: Option[String] = None,
+					fisica: Option[Boolean] = None
+					) extends Father*/
+
+//case class TipoCompra( tipo: String )
+
+/*case class ResultsFTS(
+					id: String,
+					descripcion: Option[String] = None,
+					ranking: Double)*/

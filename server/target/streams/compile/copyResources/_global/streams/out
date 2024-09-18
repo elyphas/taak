@@ -1,0 +1,4 @@
+[0m[[0m[0mdebug[0m] [0m[0mCopy resource mappings: [0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/elyphas/Prjs/taak/server/src/main/resources/index.html,/home/elyphas/Prjs/taak/server/target/scala-2.13/classes/index.html)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/elyphas/Prjs/taak/server/src/main/resources/favicon.ico,/home/elyphas/Prjs/taak/server/target/scala-2.13/classes/favicon.ico)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/home/elyphas/Prjs/taak/server/src/main/resources/application.conf,/home/elyphas/Prjs/taak/server/target/scala-2.13/classes/application.conf)[0m

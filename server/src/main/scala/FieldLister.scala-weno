@@ -1,0 +1,68 @@
+package shapeless_fieldlister
+
+import shapeless._
+import shapeless.labelled.FieldType
+
+//HList of names of fields
+/*def params[A, Repr <: HList](a: A)
+  (implicit lbl: LabelledGeneric.Aux[A, Repr], kk: Keys[Repr]) = {
+    val keys = kk.apply
+    keys
+}*/
+
+trait FieldLister[A] {
+    val list: List[String]
+}
+
+trait FieldListerLowPriority {
+    implicit def primitiveFieldLister[K <: Symbol, H, T <: HList](implicit witness: Witness.Aux[K], tLister: FieldLister[T]
+                                                               ): FieldLister[FieldType[K, H] :: T] = new FieldLister[FieldType[K, H] ::T] {
+          override val list = witness.value.name :: tLister.list
+    }
+}
+
+object FieldLister extends FieldListerLowPriority  {
+
+  def apply[A](implicit fldLister: FieldLister[A]): FieldLister[A] = fldLister
+
+  implicit def genericLister[A, R](implicit gen: LabelledGeneric.Aux[A, R], lister: Lazy[FieldLister[R]] ): FieldLister[A] = new FieldLister[A] {
+        override val list = lister.value.list
+  }
+  implicit val hnilLister: FieldLister[HNil] = new FieldLister[HNil] {
+        override val list = Nil
+  }
+  implicit def hconsLister[K, H, T <: HList](implicit hLister: Lazy[FieldLister[H]], tLister: FieldLister[T]
+                                            ): FieldLister[FieldType[K, H] :: T] = new FieldLister[FieldType[K, H] :: T] {
+        override val list = hLister.value.list ++ tLister.list
+  }
+}
+
+
+
+/**
+trait StatementGenerator[A] {
+  def select(table: String): String
+  def insert(table: String): String
+}
+
+object StatementGenerator {
+    def apply[A](implicit sg: StatementGenerator[A]): StatementGenerator[A] = sg
+
+    implicit def genericGenerator[A](implicit
+                                   fieldLister: FieldLister[A]
+                                  ): StatementGenerator[A] = new StatementGenerator[A] {
+      override def select(table: String): String = {
+        val fields = fieldLister.list.mkString(",")
+        s"SELECT $fields FROM $table"
+      }
+
+      override def insert(table: String) = {
+        val fieldNames = fieldLister.list
+        val fields = fieldNames.mkString(",")
+        val placeholders = List.fill(fieldNames.size)("?").mkString(",")
+        s"INSERT INTO $table ($fields) VALUES ($placeholders)"
+      }
+  }
+}
+
+ */

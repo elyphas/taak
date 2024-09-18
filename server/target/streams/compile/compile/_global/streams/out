@@ -1,0 +1,17 @@
+[0m[[0m[33mwarn[0m] [0m[0m/home/elyphas/Prjs/taak/server/src/main/scala/types_scarango/Requisition.scala:9:23: imported `Requisition` is permanently hidden by definition of object Requisition in package types_scarango[0m
+[0m[[0m[33mwarn[0m] [0m[0mimport shared.mytypes.Requisition[0m
+[0m[[0m[33mwarn[0m] [0m[0m                      ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m/home/elyphas/Prjs/taak/server/src/main/scala/scarango/CInstitution.scala:64:7: match may not be exhaustive.[0m
+[0m[[0m[33mwarn[0m] [0m[0mIt would fail on the following input: DeleteFieldDBx(_, _)[0m
+[0m[[0m[33mwarn[0m] [0m[0m      event match {[0m
+[0m[[0m[33mwarn[0m] [0m[0m      ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m/home/elyphas/Prjs/taak/server/src/main/scala/scarango/CItemRecipe.scala:102:9: match may not be exhaustive.[0m
+[0m[[0m[33mwarn[0m] [0m[0mIt would fail on the following inputs: DeleteFieldDBx(_, _), FindDBx(_, _)[0m
+[0m[[0m[33mwarn[0m] [0m[0m        event match {[0m
+[0m[[0m[33mwarn[0m] [0m[0m        ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m/home/elyphas/Prjs/taak/server/src/main/scala/scarango/CRecipe.scala:65:7: match may not be exhaustive.[0m
+[0m[[0m[33mwarn[0m] [0m[0mIt would fail on the following input: DeleteFieldDBx(_, _)[0m
+[0m[[0m[33mwarn[0m] [0m[0m      event match {[0m
+[0m[[0m[33mwarn[0m] [0m[0m      ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m2 deprecations (since 2.13.0); re-run with -deprecation for details[0m
+[0m[[0m[33mwarn[0m] [0m[0m5 warnings found[0m

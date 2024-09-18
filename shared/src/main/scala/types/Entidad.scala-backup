@@ -1,0 +1,58 @@
+package types_scarango
+
+import java.util.Date
+import com.outr.arango.{Document, DocumentModel, Field, Id, Index}
+import fabric.rw._ //{ReaderWriter, ccRW}
+
+import com.outr.arango.DocumentRef
+
+case class Entidad (
+       descripcion: String,
+       observacion: Option[String]
+)
+
+object Entidad {
+
+  def apply(
+         descripcion: String,
+         observacion: Option[String] = None
+    ): Entidad = new Entidad (
+            descripcion = descripcion,
+            observacion = observacion
+    )
+
+  def toScarango(item: Entidad): EntidadScarango = EntidadScarango(
+          descripcion = item.descripcion,
+          observacion = item.observacion,
+          _id = EntidadScarango.id(item.descripcion)
+  )
+
+  def toNative(item: EntidadScarango): Entidad = Entidad (
+            descripcion = item.descripcion,
+            observacion = item.observacion
+    )
+}
+
+case class EntidadScarango (
+        descripcion: String,
+        observacion: Option[String],
+        _id: Id[EntidadScarango] = EntidadScarango.id()
+) extends Document[EntidadScarango]
+
+object EntidadScarango extends DocumentModel[EntidadScarango] {
+
+    override implicit val rw: RW[EntidadScarango] = RW.gen
+
+    val descripcion: Field[String] = field("descripcion")
+    //val observacion: Field[String] = Field[String]("cve_articulo")
+    //val stock: Field[Int] = Field[Int]("stock")
+
+    override def indexes: List[Index] = Nil
+
+    //override val collectionName: String = "tblartic"
+    override val collectionName: String = "tbl_entidades"
+
+    def ref: DocumentRef[EntidadScarango, EntidadScarango.type] = DocumentRef(this, Some("a"))
+
+    //override val serialization: Serialization[EntidadScarango] = Serialization.auto[EntidadScarango]
+}

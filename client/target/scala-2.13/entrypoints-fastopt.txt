@@ -1,0 +1,6 @@
+snabbdom/modules/class
+snabbdom/modules/style
+snabbdom/modules/eventlisteners
+snabbdom/modules/props
+snabbdom
+snabbdom/modules/attributes

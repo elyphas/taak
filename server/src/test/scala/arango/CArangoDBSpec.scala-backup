@@ -1,0 +1,64 @@
+package arangotest
+
+import com.outr.arango._
+import com.outr.arango.query._
+import com.outr.arango.upgrade.DatabaseUpgrade
+//import org.scalatest.matchers.should.Matchers
+
+import org.scalatest.{FlatSpec, Matchers, Tag}
+import org.scalatest.wordspec.AsyncWordSpec
+
+import profig.Profig
+
+import scala.collection.mutable.ListBuffer
+import scala.concurrent.{ExecutionContext, Future}
+import scala.io.Source
+
+import com.outr.arango._
+import com.outr.arango.query._
+import io.youi.http.Headers
+
+import scala.util.{Try, Success, Failure}
+
+object InitArangoSpec extends Tag("InitArangoSpec")
+
+
+case class User(name: String,
+                age: Int,
+                status: Option[String] = None,
+                _id: Id[User] = User.id()) extends Document[User]
+
+object User extends DocumentModel[User] {
+    override def indexes: List[Index] = Nil
+
+    override val collectionName: String = "users"
+    override implicit val serialization: Serialization[User] = Serialization.auto[User]
+}
+
+
+class GraphSpec extends FlatSpec /*with AsyncWordSpec*/ with Matchers {
+
+    private implicit val serialization: Serialization[User] = User.serialization
+    private lazy val db = new ArangoDB("192.168.1.100")
+    private lazy val dbExample = db.api.db("aqlExample")
+    private lazy val collection = dbExample.collection(User.collectionName)
+
+    "Graph" must "checar" taggedAs(InitArangoSpec) in {
+        //Try {
+            val doDrop: Boolean = false
+
+            implicit val ec: ExecutionContext = ExecutionContext.global
+
+            Profig.initConfiguration().map { _ =>
+                succeed
+                println("Changos tamos avanzando con arangodb")
+            }
+
+            val user = User("dany",21)
+            collection.document.insertOne(user)
+        /*} match {
+            case Success(success) => println(success)
+            case Failure(error) => println(error)
+        }*/
+    }
+}

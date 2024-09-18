@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/outwatch_components.iml" filepath="$PROJECT_DIR$/.idea/modules/outwatch_components.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/outwatch_components.outwatch_components-build.iml" filepath="$PROJECT_DIR$/.idea/modules/outwatch_components.outwatch_components-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/taak.iml" filepath="$PROJECT_DIR$/.idea/modules/taak.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/taak.client.iml" filepath="$PROJECT_DIR$/.idea/modules/taak.client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/taak.server.iml" filepath="$PROJECT_DIR$/.idea/modules/taak.server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/taak.shared.sharedJS.iml" filepath="$PROJECT_DIR$/.idea/modules/taak.shared.sharedJS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/taak.shared.sharedJVM.iml" filepath="$PROJECT_DIR$/.idea/modules/taak.shared.sharedJVM.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/taak.taak-build.iml" filepath="$PROJECT_DIR$/.idea/modules/taak.taak-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/taak.taak-sources.iml" filepath="$PROJECT_DIR$/.idea/modules/taak.taak-sources.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,188 @@
+package testing_doobie
+
+import monix.execution.ExecutionModel.SynchronousExecution
+import monix.execution.Scheduler
+import monix.execution.schedulers.TrampolineScheduler
+
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.{FlatSpec, Matchers, Tag}
+
+import cats.implicits._
+import cats.data.EitherT
+import cats.effect.IO
+
+import doobie._
+import doobie.implicits._
+
+import doobie_classes.CMyConnection
+
+import manik1.manik1.shared.EventsDoobie._
+
+import spatutorial.shared.{ItemRequisition, Inventory}
+import doobie_classes.{CCommanSQLGenerator, CInventory}
+
+object SeekItemRequisitionSpec extends Tag("SeekItemRequisitionSpec")
+object SelectItemRequisitionSpec extends Tag("SelectItemRequisitionSpec")
+object UpdateItemRequisitionSpec extends Tag("UpdateItemRequisitionSpec")
+object InsertItemRequisitionSpec extends Tag("InsertItemRequisitionSpec")
+object DeleteItemRequisitionSpec extends Tag("DeleteItemRequisitionSpec")
+object EventsItemRequisitionSpec extends Tag("EventsItemRequisitionSpec")
+object SelectByDocumentItemRequisitionSpec extends Tag("SelectByDocumentItemRequisitionSpec")
+
+class CItemRequisitionSpec extends FlatSpec with Matchers with ScalaFutures {
+
+  implicit val scheduler = TrampolineScheduler(Scheduler.global, SynchronousExecution)
+
+   val myConnection = new CMyConnection
+
+   def runDoobie[A](x: ConnectionIO[A]) = x.transact(myConnection.xa).attempt
+                                          .map(_.leftMap(_.getMessage)).unsafeToFuture
+
+   val ctest = new CCommanSQLGenerator[ItemRequisition]("tbl_requisition_details")
+
+  /*"Select Item's Document Requisition from table" must "be Selected" taggedAs(SelectByDocumentItemRequisitionSpec) in {
+      val item = ItemGoods ( fiscal_period = 2020, folio = "7777" )
+      println("******  Searching for List of ItemGoods in Requisition ***")
+      val cond = Some(fr"fiscal_period = ${item.fiscal_period}" ++ fr"and" ++ fr"folio = ${item.folio}") 
+      val result = ctest.byIdDocument(cond).transact(myConnection.xa).attempt.map(_.leftMap(_.getMessage)).unsafeToFuture
+      println(result)
+  }*/
+
+  "Select Item Requisition from table" must "be Selected" taggedAs(SelectItemRequisitionSpec) in {
+     
+      val itemInvent = Inventory ( pArea = "pharmacy", pKey_item = "002.502.0719" )
+
+      val item = ItemRequisition(
+                                  fiscal_period = 2020, folio = "7777", key_item = "002.502.0719",
+                                  description_item = "stament generator", quantity = 555
+                                )
+
+      println ( "************* Searching for ItemGoods in Requisition **************" )
+
+      val cond = Some ( fr"fiscal_period = ${item.fiscal_period}" ++ fr"and" ++
+                        fr"folio = ${item.folio}" ++ fr"and" ++
+                        fr"key_item = ${item.key_item}" )
+
+      val cnnResult = ctest.byId(cond)
+      val cinv = new CInventory
+
+      val result = for {
+                      f <- runDoobie(cnnResult)
+
+                      r = {
+                        f match {
+                            case Right(r) =>
+                                r match {
+                                    case Some(a) => (a, FoundDoobie())
+                                    case None => (ItemRequisition(), NotFoundDoobie())
+                                }
+                            case Left(errors) => errors
+                        }
+                      }
+                      i <- runDoobie(cinv.byId(item.key_item))
+                   } yield {
+                      println("inside the for-comprehension")
+                      println(i)
+                      println(r)
+                   }
+
+      println(result)
+
+  }
+
+  "Update record from table" must "be updated" taggedAs(UpdateItemRequisitionSpec) in {
+
+      val item = ItemRequisition( fiscal_period = 2020, folio = "7777", key_item = "000.502.0036", 
+                                  description_item = "stament generator the coolest way **",
+                                  quantity = 555) 
+
+      val cond = Some (
+            fr"fiscal_period = ${item.fiscal_period}" ++
+            fr"and" ++
+            fr"folio = ${item.folio}" ++
+            fr"and" ++
+            fr"key_item = ${item.key_item}"
+       )
+
+      val ver = ctest
+                      .update(item, cond).update.run
+                      .transact(myConnection.xa)
+                      .attempt.map(_.leftMap(_.getMessage))
+                      .unsafeRunSync 
+      println(ver)
+  }
+  
+  "Insert record into table" must "be inserted" taggedAs(InsertItemRequisitionSpec) in {
+
+      val item = ItemRequisition(
+                fiscal_period = 2020, 
+                folio = "7777", 
+                key_item = "000.502.0038", 
+                description_item = "changos testing inserting with the coolest way type class",
+                measurement_unit = "PIEZA",
+                presentation = None,
+                package_unit_measurement = None,
+                quantity = 444
+      )
+
+      val ver = ctest
+                      .insert(item).update.run
+                      .transact(myConnection.xa)
+                      .attempt.map(_.leftMap(_.getMessage))
+                      .unsafeRunSync 
+
+      ver.foreach(println)
+
+  }
+
+  "Delete record from table" must "be deleted" taggedAs(DeleteItemRequisitionSpec) in {
+
+      val item = ItemRequisition(
+                      fiscal_period = 2020, 
+                      folio = "7777", 
+                      key_item = "000.502.0036"
+                 )
+
+      val cond = Some (
+            fr"fiscal_period = ${item.fiscal_period}" ++
+            fr"and" ++
+            fr"folio = ${item.folio}" ++
+            fr"and" ++
+            fr"key_item = ${item.key_item}"
+       )
+
+      val ver = ctest
+                     .delete(cond).update.run
+                     .transact(myConnection.xa)
+                     .attempt.map(_.leftMap(_.getMessage))
+                     .unsafeRunSync
+
+      println(ver)
+  }
+
+  "Testing event method" must "be do differente event" taggedAs(EventsItemRequisitionSpec) in {
+      
+      val event: EventsDoobieWillDo = InsertDoobie 
+
+      val item = ItemRequisition(
+                      fiscal_period = 2020, 
+                      folio = "7777", 
+                      key_item = "000.502.0036"
+                 )
+
+      val result = event match {
+          case InsertDoobie =>
+                for {
+                    _ <- ctest.insert(item).update.run
+                } yield (item, SavedDoobie(): EventsDoobieResult)
+      }
+
+      val didRun = result
+                        .transact(myConnection.xa)
+                        .attempt.map(_.leftMap(_.getMessage))
+                        .unsafeToFuture
+
+      println(didRun)
+
+  }
+}

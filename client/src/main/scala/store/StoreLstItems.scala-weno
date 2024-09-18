@@ -1,0 +1,125 @@
+package manik1.modules.lstBienesStore
+
+import manik1.services.WSCovenant
+import outwatch.util.{Store, Reducer}
+import monix.execution.Scheduler.Implicits.global
+import monix.reactive.Observable
+import spatutorial.shared.LstItems
+import cats.effect.IO
+import spatutorial.shared.comparativostypes.QryRow
+import spatutorial.shared.processtypes.Renglon
+
+/***********************************************************/
+import boopickle.Default._
+import mycelium.client._
+import manik1.services.{WSMyCelium}
+import scala.concurrent.duration._
+/***********************************************************/
+
+class StoreLstItems {
+
+  sealed trait ActionsStore
+  case object Search extends ActionsStore
+  case class UpdateLstItems(l: LstItems[QryRow]) extends ActionsStore
+  case class UpdateField(field: String, value: String) extends ActionsStore
+
+  case class UpdateItemPrecio(field: String, value: String, col: Int, row: Int) extends ActionsStore
+
+  case class UpdateIdAndDescription(id: String, description: String) extends ActionsStore
+
+  case class UpdateStoreAndSaveDB(precio_referencia: Double) extends ActionsStore
+
+  case class DeleteItem(item: QryRow) extends ActionsStore
+
+  case class UpdateItem(key: String, value: String) extends ActionsStore
+
+  case object InsertItem extends ActionsStore
+  case object DeleteItem extends ActionsStore
+  case object Clean extends ActionsStore
+  case object Saved extends ActionsStore
+  case object Deleted extends ActionsStore
+  case object NotSaved extends ActionsStore
+
+  case class UpdateRowActive(row: Int) extends ActionsStore
+  case class ServerFailure(msg: String) extends ActionsStore
+
+  case class RowActive(rowActive: Int = 0)
+  case class ItemNew(row: Int)
+
+  /***************************************************************************************************
+    Vamos a usar variables para ver si esta editanto o es nuevo, despues se tiene que usar FSM.
+  ****************************************************************************************************/
+
+  case class State (  items: LstItems[QryRow] = LstItems(List.empty[QryRow]),
+                      rowActive: RowActive = RowActive(),
+                      itemNew: ItemNew = ItemNew(row = 0),
+                      processingSideEffect: Option[String] = None)
+
+  val reduce: Reducer[ActionsStore, State] = Reducer {
+    //a match {
+      case (s, UpdateRowActive(rowAct)) =>
+        val setRowActive = RowActive(rowActive = rowAct)
+        s.copy(rowActive = setRowActive)
+      case (s, Clean) => s.copy(items = LstItems(List.empty[QryRow]))
+      case (s, UpdateLstItems(lst)) =>
+        val newList = lst.items.sortBy(_.renglon)
+        val lastRenglon = newList.size + 1
+        val newItem = QryRow(renglon = lastRenglon)
+        val newItems = (newList :+ newItem).sortBy(_.renglon)
+        s.copy(items = LstItems(newItems), itemNew = ItemNew(lastRenglon))
+      case (s, InsertItem) =>
+        val lastRenglon = s.items.items.size + 1
+        val newItem = QryRow(renglon = lastRenglon)
+        val newItems = (s.items.items :+ newItem).sortBy(_.renglon)
+        s.copy(items = s.items.copy(items = newItems))  //, Observable.empty)
+
+      case (s, DeleteItem) =>
+        val curItem = s.items.items(s.rowActive.rowActive - 1)
+        val newItems = s.items.items.filter(_ != curItem)
+        s.copy(items = s.items.copy(items = newItems))  //, Observable.empty)
+      // @@@@@@@@@@@@@@ Deberia quitarse por se debe eliminar el elemento actual, entonces eso se toma de la fila activa.
+      /*case (s, DeleteItem(item)) =>
+        val newItems = s.items.items.filter(_ != item)
+        s.copy(items = s.items.copy(items = newItems))*/
+      case (s, UpdateIdAndDescription(id, descripc)) =>
+
+        val curItem = s.items.items(s.rowActive.rowActive - 1)
+        val curItemUpdated = curItem.copy(cve_articulo = id, descripcion = descripc)
+        val lstUpdated = s.items.updatedByIdx(s.rowActive.rowActive - 1, curItemUpdated)
+
+        s.copy(items = lstUpdated)
+
+      case (s, UpdateField(field, value)) =>
+
+        val curItemUpdated =  if (field == "cantidad") s.items.items(s.rowActive.rowActive - 1).copy(cantidad = value.toInt)
+                              else QryRow()
+
+        val lstUpdated = s.items.updatedByIdx(s.rowActive.rowActive - 1, curItemUpdated)
+        s.copy(items = lstUpdated)
+      case (s, UpdateStoreAndSaveDB(precio_referencia)) =>
+        val curItemUpdated = s.items.items(s.rowActive.rowActive - 1).copy(precio_referencia = Some(precio_referencia))
+        val lstUpdated = s.items.updatedByIdx(s.rowActive.rowActive - 1, curItemUpdated)
+        s.copy(items = lstUpdated)
+
+      case (state, UpdateItem(key, value)) =>
+        val curItem = state.items.items(state.rowActive.rowActive - 1)
+        val curItemUpdated = key match {
+            case "cantidad" => curItem.copy(cantidad = value.toInt )
+            case "precio_referencia" => curItem.copy(precio_referencia = Some(value.toDouble))
+        }
+        val lstUpdated = state.items.updatedByIdx( state.rowActive.rowActive - 1, curItemUpdated)
+        state.copy(items = lstUpdated)
+      case (s, ServerFailure(msg)) =>
+        println(msg)
+        s
+      case (s, Saved) => s
+      case (s, Deleted) => s
+      case (s, NotSaved) => s
+      case (s, otros) =>
+        println ( s"¡Algo malo paso y no sabemos que!!! action: $otros" )
+        s
+   }
+
+  val store = Store.create[IO](Clean, State(), reduce).unsafeRunSync()
+
+}

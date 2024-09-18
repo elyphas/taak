@@ -1,0 +1,271 @@
+package manik1.pdfmake
+
+import cats.Reducible
+import cats.data.NonEmptyList
+/*import cats._
+import cats.data.NonEmptyList*/
+import cats.implicits._
+
+import manik1.pdfmake.fakade._
+import outwatch.VDomModifier
+//GralDataComparative
+//GralDataProcess,
+import spatutorial.shared.comparativostypes.{Comparative, QryRow, ViewProcess}
+
+import scala.scalajs.js.JSConverters._
+import scala.scalajs.js.{|, Date => jsDate}
+
+//import spatutorial.shared.processtypes.ViewProceso
+
+class rptComparative extends reports {
+
+  def print(gralData: ViewProcess, comparatives: List[(QryRow, Comparative)], minimosRetenISR: Double) = {
+
+    val list = comparatives.map(_._1)
+    val comparative = comparatives.map(_._2)
+
+    /*val (list, comparative) = comparatives match {
+        case Some(comp) => (comp.map(_._1), comp.map(_._2))
+        //case None => ()
+    }*/
+
+    try {
+
+      type tablaParag = scala.scalajs.js.UndefOr[Seq[tabla|paragraph]]
+
+      val fontsize = 6
+      val boldish = false
+
+      def membrete(currentPage: Int, pageCount: Int): tabla|paragraph = paragraph(table = bodyTable(
+                    body = Seq(
+                      Seq(
+                        imagen(image = logoGuerrero, width = 70, border = noBorder, rowSpan = 4),
+                        celda(text = "SECRETARÍA DE SALUD EN GUERRERO", colSpan = 5, bold = true, border = wBorder, alignment = "center"),
+                        EmptyCel, EmptyCel, EmptyCel, EmptyCel,
+                        imagen(image = logoSalud, width = 70, border = noBorder, rowSpan = 4)
+                      ),
+                      Seq(
+                        celda(text = " ", border = noBorder),
+                        celda(text = "TABLA COMPARATIVA DE COTIZACIONES", bold = true, border = wBorder, colSpan = 5, alignment = "center"),
+                        EmptyCel,EmptyCel,EmptyCel,EmptyCel,EmptyCel
+                      ),
+                      Seq(EmptyCel,EmptyCel,EmptyCel,EmptyCel,EmptyCel,EmptyCel,EmptyCel),
+                      Seq(EmptyCel,EmptyCel,EmptyCel,EmptyCel,EmptyCel,EmptyCel,EmptyCel),
+                      Seq(celda(text = "id comparativo: " + gralData.id_comparativo, fontSize = fontsize, bold = boldish, colSpan = 2),
+                        celda(text = " ", fontSize = fontsize, bold = boldish),
+                        celda(text = "Tipo de Compra: " + gralData.tipo_compra, colSpan = 3),
+                        EmptyCel, EmptyCel,
+                        celda(text = "ejercicio presupuestal: ", fontSize = fontsize, bold = boldish, alignment = "right"),
+                        celda(text = gralData.ejercicio_presupuesto.toString, fontSize = fontsize, bold = boldish)
+                      ),
+                      Seq(
+                        celda(text = "Destino: ", fontSize = fontsize, bold = boldish),
+                        celda(text = gralData.destino, fontSize = fontsize, bold = boldish, colSpan = 3),
+                        EmptyCel, EmptyCel,
+                        celda(text = "Programa: " + gralData.programa + ": " + gralData.programa_descripcion, fontSize = fontsize, bold = boldish, colSpan = 3),
+                        celda(text = " ", fontSize = fontsize, bold = boldish), EmptyCel
+                      ),
+                      Seq(
+                        celda(text = "Área: ", fontSize = fontsize, bold = boldish),
+                        celda(text = gralData.cve_oficina + ": " + gralData.oficina_descripcion, fontSize = fontsize, bold = boldish, colSpan = 3),
+                        celda(text = ""),
+                        celda(text = ""),
+                        celda(text = "Elaboro: " + gralData.elaboro + ": " + "gralData.nombreUsuario", colSpan = 3),
+                        EmptyCel,EmptyCel
+                      )
+                    ),  widths = Seq(30, 90, 110, 110, 110, 110, 110),
+                        layout = layoutObj(defaultBorder = true, hLineWidth = (i: Int, node: Int) => if(true) 0.1 else 0.1 )
+                  ), margin = Seq(20,20,10,10))
+
+      def footer (currentPage: Int, pageCount: Int) = tabla(
+                                                            table = bodyTable(
+                                                              body = Seq(Seq(celda(text = " "), celda(text = ""), celda(text = " "))),
+                                                              widths = Seq(10, 556, 10)), layout = "noBorders" )
+
+      type RowDetail = Seq[String|Double|Int|imagen|celda|tabla|columnas]
+
+      //val marginsCell = Seq(4, 0, 1, 0)
+      //def shadowMin(prec: Double, min: Double) = if (prec == min) "#d5dbdb" else ""
+      //def calSubt(renglon: Int, precio: Double) = list.filter( r => r.renglon == renglon ).map(_.cantidad).head * precio
+
+      val subTotMinimos = list.map { r => r.cantidad * r.minimo.getOrElse(0.0) }.fold(0.0)(_+_)
+      //val subTotMinimos = Reducible[NonEmptyList].reduceLeft(list)((s, i) => s.minimo.get + i.minimo.getOrElse(0))
+
+      val ivaMinimos = list.map { r => (r.cantidad * r.minimo.getOrElse(0.0)) * (r.iva.getOrElse(0.0)/100) }.fold(0.0)(_+_)
+      val totalMinimos = list.map { r => (r.cantidad * r.minimo.getOrElse(0.0)) * (1 + (r.iva.getOrElse(0.0)/100)) }.fold(0.0)(_+_)
+
+      //val subtotales = comparatives.map { case (reng, cotiz) => cotiz.tenders.mapValues( c =>  c.price * reng.cantidad) }.reduce(_|+|_) //on 2.12
+      val subtotales = comparatives.map { case (reng, cotiz) => cotiz.tenders.mapValues( c =>  c.price * reng.cantidad).toMap }.reduce(_|+|_) //on 2.13
+
+      //val ivas = comparatives.map{case (reng, cotiz) => cotiz.tenders.mapValues(_.price * reng.cantidad * (reng.iva.getOrElse(0.0)/100)) }.reduce(_|+|_) //on 2.12
+      val ivas = comparatives.map{case (reng, cotiz) => cotiz.tenders.mapValues(_.price * reng.cantidad * (reng.iva.getOrElse(0.0)/100)).toMap }.reduce(_|+|_) //on 2.13
+
+      //val isr = comparatives.map { case (reng, cotiz) => cotiz.tenders.mapValues(_.retension_isr) }.reduce(_|+|_)  //on 2.12
+      val isr = comparatives.map { case (reng, cotiz) => cotiz.tenders.mapValues(_.retension_isr).toMap }.reduce(_|+|_)   //on 2.13
+
+      /*val isr = comparatives.map{case (reng, cotiz) =>
+                    cotiz.tenders.map { case (rfc, price) =>
+                      val reten = if ( rfc.length == 12 ) 0.0 else (price * reng.cantidad * (reng.retension_isr.getOrElse(0.0)/100))
+                      (rfc, reten)
+                    }
+              }.reduce(_|+|_)*/
+
+      //val totales = subtotales |+| ivas |+| isr.mapValues( _*(-1))    //on 2.12
+      val totales = subtotales |+| ivas |+| isr.mapValues( _*(-1)).toMap  //on 2.13
+
+      val cellSubtotales: RowDetail = subtotales.flatMap{ case (_, v) => Seq(cellNum(v, dec = 2, colsSpan = 2), EmptyCel): RowDetail }.toList
+
+      val rowSubTot: RowDetail = (Seq(
+          celda(text = "", border = noBorder, colSpan = 3 ), EmptyCel, EmptyCel,
+          celda(text = "Subtotal", alignment = "Left", colSpan = 2), EmptyCel
+      ): RowDetail) ++ cellSubtotales ++ ( Seq(cellNum(subTotMinimos, colsSpan = 2), EmptyCel): RowDetail )
+
+      val cellIVA: RowDetail =  ivas.flatMap { case (_, s) =>
+          Seq(celda(text = fmtMiles(s), fontSize = 6, alignment = "right", colSpan = 2), EmptyCel ): RowDetail
+      }.toSeq
+
+      val rowIVA: RowDetail = (Seq(
+        celda(text = "", border = noBorder, colSpan = 3 ), EmptyCel, EmptyCel,
+        celda(text = "I.V.A.", alignment = "Left", colSpan = 2), EmptyCel
+      ): RowDetail) ++ cellIVA ++ (Seq(celda(text = fmtMiles(ivaMinimos), fontSize = 6, alignment = "right", colSpan = 2), EmptyCel): RowDetail)
+
+      //Nuevo pa agregar el i.s.r.
+      val cellISR: RowDetail =  isr.flatMap { case (_, s) =>
+        Seq(celda(text = fmtMiles(s), fontSize = 6, alignment = "right", colSpan = 2), EmptyCel ): RowDetail
+      }.toSeq
+
+      val rowISR: RowDetail = (Seq(
+        celda(text = "", border = noBorder, colSpan = 3 ), EmptyCel, EmptyCel,
+        celda(text = "I.S.R.", alignment = "Left", colSpan = 2), EmptyCel
+      ): RowDetail) ++ cellISR ++ (Seq(celda(text = "", fontSize = 6, alignment = "right", colSpan = 2), EmptyCel): RowDetail)
+
+      //): RowDetail) ++ cellIVA ++ (Seq(celda(text = fmtMiles(  ivaMinimos), fontSize = 6, alignment = "right", colSpan = 2), EmptyCel): RowDetail)
+
+      /*val cellISR: RowDetail = provCotiz.flatMap { s =>
+        val n = isr.get(s.rfc).getOrElse(0.0)
+        Seq(celda(text = fmtMiles(n), fontSize = 6, alignment = "right", colSpan = 2), EmptyCel): RowDetail
+      }.toSeq
+
+      val rowISR: RowDetail = (Seq(
+        celda(text = "", border = noBorder, colSpan = 3), EmptyCel, EmptyCel,
+        celda(text = "I.S.R.", alignment = "Left", colSpan = 2), EmptyCel
+      ): RowDetail) ++ cellISR ++ (Seq(celda(text = fmtMiles( isrMinimos), fontSize = 6, alignment = "right", colSpan = 2), EmptyCel): RowDetail)*/
+
+      /*val cellTotal: RowDetail = provCotiz.flatMap { s =>
+        val n = total.get(s.rfc).getOrElse(0.0)
+        Seq(celda(text = fmtMiles(n), fontSize = 6, alignment = "right", colSpan = 2), EmptyCel ): RowDetail }.toSeq*/
+
+      val cellTotal: RowDetail = totales.flatMap { case (_, s) =>
+        Seq(celda(text = fmtMiles(s), fontSize = 6, alignment = "right", colSpan = 2), EmptyCel ): RowDetail }.toSeq
+
+      val rowTot: RowDetail = (Seq(
+        celda(text = "", border = noBorder, colSpan = 3), EmptyCel, EmptyCel,
+        celda(text = "Totales", alignment = "Left", colSpan = 2), EmptyCel
+      ): RowDetail) ++ cellTotal ++ (Seq(cellNum(totalMinimos, colsSpan = 2), EmptyCel): RowDetail)
+
+      val fntSize = 6
+
+      val lst = list.groupBy(_.descripcionPartida).toSeq.sortBy(_._2.head.renglon)
+
+      val widthsDetails = Seq(20, 42, 138, 30, 30) ++ totales.flatMap { _ => Seq( 40, 40) } ++ Seq(40, 40)
+
+      val cellTitles: RowDetail = totales.flatMap { case ( p, _ ) =>
+        Seq( celda(text = p, border = wBorder, fillColor = sombra, bold = true, colSpan = 2, alignment = "center"), EmptyCel): RowDetail }.toSeq
+
+      val titleComparativo: RowDetail = (Seq(
+        celda(text = "Reng.", border = wBorder, fillColor = sombra, bold = true, alignment = "center"),
+        celda(text = "Clave", border = wBorder, fillColor = sombra, bold = true, alignment = "center"),
+        celda(text = "Descripción", border = wBorder, fillColor = sombra, bold = true, alignment = "center"),
+        celda(text = "Unidad", border = wBorder, fillColor = sombra, bold = true, alignment = "center"),
+        celda(text = "Cant.", border = wBorder, fillColor = sombra, bold = true, alignment = "center")
+      ):RowDetail) ++ cellTitles ++ (Seq(celda(text = "Minimos", border = wBorder, fillColor = sombra, bold = true, colSpan = 2, alignment = "center"),EmptyCel):RowDetail)
+
+      def filaPartida(p: String): RowDetail =
+        (Seq(celda(text = p, colSpan = 5), EmptyCel, EmptyCel, EmptyCel, EmptyCel):RowDetail) ++ (totales.flatMap { _ =>
+          Seq(EmptyCel,EmptyCel) }.toSeq: RowDetail) ++ (Seq(EmptyCel, EmptyCel):RowDetail)
+
+      val printDetails = titleComparativo +: lst.flatMap { case (g, ds) =>
+            filaPartida(g) +: ds.map { reng =>
+              (Seq(
+                celda(text = reng.renglon.toString, fontSize = fntSize),
+                celda(text = reng.cve_articulo, fontSize = fntSize),
+                celda(text = reng.descripcion, alignment = "justify", fontSize = fntSize - 1),
+                celda(text = reng.unidad, fontSize = fntSize-1),
+                celda(text = fmtMiles(reng.cantidad,0), fontSize = fntSize - 1, alignment = "right")
+              ): RowDetail) ++ ( comparative(reng.renglon - 1 ).tenders.map { case (__, cost ) =>
+                val shadw = if ( cost.price == reng.minimo.getOrElse(0.0)) sombra else if (cost.price < 0) shadowDesc else ""
+                Seq(cellNum( cost.price, sombra = shadw), cellNum(reng.cantidad * cost.price ))
+              }.toSeq.flatten: RowDetail ) ++ (Seq(
+                celda(text = fmtMiles( BigDecimal(reng.minimo.getOrElse(0.0)) ), fontSize = fntSize - 1, alignment = "right"),
+                celda(text = fmtMiles(reng.cantidad*reng.minimo.getOrElse(0.0)), fontSize = fntSize - 1, alignment = "right")
+              ): RowDetail)
+        }
+      }
+
+      val cuadroComparativo = printDetails :+ rowSubTot :+ rowIVA :+ rowISR :+ rowTot
+
+      val montosPartida = list.groupBy(_.partida).flatMap { case (g, ds) =>
+        val montoParida = ds.map { r => (r.cantidad * r.minimo.getOrElse(0.0)) * ( 1 + (r.iva.getOrElse(0.0)/100) )}.fold(0.0)(_+_)
+        Seq((g, montoParida))
+      }
+
+      val titlePartidaMonto: Seq[RowDetail] =  Seq(Seq(
+            celda(text = "Partida", bold = true, fillColor = sombra, alignment = "center"),
+            celda(text = "Monto", bold = true, fillColor = sombra, alignment = "center")
+          )) //: RowDetai
+
+      val ver: Seq[RowDetail] = montosPartida.map { case (k, v) =>   //on 2.13
+              val result: RowDetail = Seq(
+                  celda(text = k, alignment = "center", bold = true),
+                  celda(text = fmtMiles(v), alignment = "right", bold = true)
+              )
+              result
+          }.toSeq //.toJSArray //.toJSArray on 2.12
+
+      val tblMontosPartida: Seq[RowDetail] = titlePartidaMonto ++: ver
+
+      val parMontosPartida = paragraph(table = bodyTable(
+          widths = Seq(30, 100),
+          body = tblMontosPartida,
+          headerRows = 0
+        ), margin = Seq(100, 10, 10, 10)
+      )
+
+      val tblMinimosISR = Seq(Seq(
+              celda(text = "Retension I.S.R.", bold = true, fillColor = sombra, alignment = "right"),
+              celda(text = fmtMiles(minimosRetenISR,2), alignment = "right"),
+            ): RowDetail,
+            Seq(
+              celda(text = "Total - I.S.R.", bold = true, fillColor = sombra, alignment = "right"),
+              celda(text = fmtMiles(totalMinimos - minimosRetenISR,2), alignment = "right"),
+            ): RowDetail
+        )  //.toJSArray
+
+      val parMinimosRetensionISR = paragraph(table = bodyTable(
+              widths = Seq(80, 100),
+              body = tblMinimosISR,
+              headerRows = 0
+      ), margin = Seq(100, 10, 10, 10)
+      )
+
+    pdfMake.createPdf(docDefinition(
+      header = (page: Int, pages: Int) => membrete(page, pages),
+      footer = (currentPage: Int, pageCount: Int) => footer(currentPage, pageCount),
+      pageMargins = Seq(18, 120, 40, 40), /*left, top "plus header", right, bottom*/
+      pageOrientation = "landscape",
+      content = Seq(tabla(table = bodyTable(
+                   widths = widthsDetails,
+                   body = cuadroComparativo,
+                   headerRows = 2
+                    ), layout = layoutObj(defaultBorder = true /*, hLineWidth = (i: Int, node: Int) => 1*/ )
+                ),
+              paragraph(text = Seq(texto(text = "\n\n"):texto|tabla) ),
+              parMinimosRetensionISR,
+              parMontosPartida,
+          )
+      )).open
+    } catch {
+      case e: Exception => println("jcza, my print; exception caught: " + e)
+    }
+  }
+}

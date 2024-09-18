@@ -1,0 +1,53 @@
+package manik1.modules
+
+/**
+import monix.execution.Scheduler.Implicits.global
+import monix.execution.Cancelable
+import monix.reactive.Observable
+import colibri.ext.monix._
+import colibri.ext.monix.ops._
+import outwatch.reactive.handlers.monix._
+*/
+
+import outwatch._
+import outwatch.dsl._    //{span => sp, _}
+import colibri._
+
+//import manik1.manik1.shared.EventsDoobie.{DeleteDoobie, EventsDoobieWillDo, FindDoobie, InsertDoobie, UpdateDoobie}
+import org.scalajs.dom.raw.MouseEvent
+
+import cats.data.NonEmptyList
+
+trait FrmMainItem[Item] {
+
+  type MainItem = Item
+  
+  def getItemNew[Item]: Item = ???
+
+  //val hdlNew = Handler.create[Boolean](true).unsafeRunSync()
+  val hdlNew = Subject.behavior[Boolean](true)
+
+  //val hdlProcessingSideEffects = Handler.create[String]("").unsafeRunSync()
+  val hdlProcessingSideEffects = Subject.behavior[String]("")
+
+  def processingSideEffects = hdlProcessingSideEffects.map {
+          case "" => None
+          case msg => Some(div(clear.both, cls := "processingSideEffects", msg))
+  }
+
+  //val hdlProcessingSideEffectsNEL = Handler.create[NonEmptyList[String]](NonEmptyList.one("")).unsafeRunSync()
+  val hdlProcessingSideEffectsNEL = Subject.behavior[NonEmptyList[String]](NonEmptyList.one(""))
+
+  def processingSideEffects2 = hdlProcessingSideEffectsNEL.map { msg =>
+        Some(div(clear.both, cls := "processingSideEffects", msg.reduceLeft(_+_) ))
+  }
+
+  def getHdlMainItem(item: Item): BehaviorSubject[Item]         //outwatch.reactive.handlers.monix.Handler[Item]
+        = {
+          //val hdl = Handler.create[Item](item).unsafeRunSync
+          val hdl = Subject.behavior[Item](item)
+          hdl.onNext(item)
+          hdl
+  }
+
+}

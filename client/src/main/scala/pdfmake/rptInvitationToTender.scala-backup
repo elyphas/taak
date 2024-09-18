@@ -1,0 +1,149 @@
+package manik1.pdfmake
+
+import scala.scalajs.js
+import java.time._
+
+import scala.concurrent.Future
+import manik1.pdfmake.fakade._
+
+import scala.scalajs.js.JSConverters._
+import scala.scalajs.js.{|, Date => jsDate}
+import cats._
+import cats.implicits._
+import spatutorial.shared.comparativostypes.{Tenderer, ViewProcess}
+//import spatutorial.shared.processtypes.ViewProceso
+
+class rptInvitationToTender extends reports {
+
+  def print ( tenderers: Seq[Tenderer] ) = {
+
+    try {
+
+      type tablaParag = scala.scalajs.js.UndefOr[Seq[tabla|paragraph]]
+
+      def membrete(currentPage: Int, pageCount: Int): tabla = tabla(table = bodyTable(
+                    body = Seq(
+                      Seq(EmptyCel,EmptyCel,EmptyCel,EmptyCel),
+                      Seq(EmptyCel,EmptyCel,EmptyCel,EmptyCel),
+                      Seq(EmptyCel,EmptyCel,EmptyCel,EmptyCel),
+                      Seq(
+                        celda ( text = "" ),
+                        imagen ( image = logoGuerrero, width = 80, border = noBorder, rowSpan = 6 ),
+                        celda(text = "SECRETARÍA DE SALUD EN GUERRERO", fontSize = 15, bold = true, border = noBorder, alignment = "center" ),
+                        imagen(image = logoSalud, width = 80, border = noBorder, rowSpan = 6 )
+                      ),
+                      Seq (
+                        EmptyCel,
+                        celda ( text = " ", border = noBorder ),
+                        celda ( text = "SUBSECRETARIA DE ADMINISTRACIÓN Y FINANZAS", border = noBorder, alignment = "center" ),
+                        EmptyCel
+                      ),
+                      Seq (
+                        EmptyCel,
+                        celda ( text = " ", border = noBorder ),
+                        celda ( text = "SUBDIRECCIÓN DE RECURSOS MATERIALES", border = noBorder, alignment = "center" ),
+                        EmptyCel
+                      ),
+                      Seq (
+                        EmptyCel,
+                        celda ( text = " ", border = noBorder ),
+                        celda ( text = "DEPARTAMENTO DE ADQUISICIONES", border = noBorder, alignment = "center" ),
+                        EmptyCel
+                      ),
+                      Seq(EmptyCel,EmptyCel,EmptyCel,EmptyCel),
+                      Seq(EmptyCel,EmptyCel,EmptyCel,EmptyCel),
+                      Seq (
+                        EmptyCel,
+                        celda ( text = " ", border = noBorder ),
+                        celda ( text = "SOLICITUD DE COTIZACIÓN", bold = true, border = noBorder, alignment = "center" ),
+                        EmptyCel
+                      )
+                    ),
+                    widths = Seq ( 30, 90, 300, 90 )
+                  ),
+                  layout = "noBorders"
+                )
+
+      def footer (currentPage: Int, pageCount: Int) = tabla ( table = bodyTable(
+                                                                  body = Seq(Seq(celda(text = " "), celda(text = ""), celda(text = " "))),
+                                                                  widths = Seq(10, 556, 10)), layout = "noBorders" )
+
+      type RowDetail = Seq[String|Double|Int|imagen|celda|tabla|columnas]
+
+    def txtR(str: String) = texto (text = str + "\n", alignment = "right"):texto|tabla
+    def txtL(str: String) = texto (text = str + "\n", alignment = "left"):texto|tabla
+    def txtJ(str: String) = texto (text = str + "\n", alignment = "justify"):texto|tabla
+
+    val bodyContent =
+      tenderers.flatMap { tenderer =>
+        val prov = tenderer.business_name.getOrElse("no hay proveedor")
+        val representante = tenderer.company_owner.getOrElse("")
+        val street = tenderer.street.getOrElse("")
+        val suburb = tenderer.suburb.getOrElse("")
+        val suburb2 = tenderer.suburb2.getOrElse("")
+        val zipCode = tenderer.zip_code.getOrElse("")
+        val city = tenderer.city.getOrElse("")
+        val phones = tenderer.phones.getOrElse("")
+        val fax = tenderer.fax.getOrElse("")
+
+        Seq(
+          paragraph ( text =
+            Seq (
+              txtR("Chilpancingo de los Bravo Grol., a 15 de Enero del 2019."),
+              txtL("\n\n\n\n" ),
+              txtL("R.F.C. : " + tenderer.key_provider),
+              txtL("Razon Social: " + prov),
+              txtL("Representante: " + representante),
+              txtL("Calle: " + street),
+              txtL("Colonia: " + suburb),
+              txtL("Delegacion: " + suburb2),
+              txtL("Codigo Postal: " + zipCode),
+              txtL("Ciudad: " + city),
+              txtL("Telefonos: " + phones),
+              txtL("Fax: " + fax)
+            )
+          ),
+          paragraph ( text =
+            Seq (
+              txtR( "Por medio del presente se le invita a participar en el proceso de adquisición.")
+            )
+          ),
+          texto ( text = "", pageBreak = "before" ): texto|paragraph,
+        ): Seq[paragraph|texto]
+      }
+      /*Seq (
+        paragraph ( text =
+          Seq (
+              texto ( text = "Chilpancingo de los Bravo Grol., a 15 de Enero del 2019.", alignment = "right" ):texto|tabla,
+              texto ( text = "\n\n\n\n" ):texto|tabla,
+              texto ( text = "" ):texto|tabla
+            )
+          )
+      )*/
+
+    pdfMake.createPdf(docDefinition(
+      header = (page: Int, pages: Int) => membrete ( page, pages ),
+      footer = (currentPage: Int, pageCount: Int) => footer ( currentPage, pageCount ),
+      pageMargins = Seq( 58, 220, 40, 40), /*left, top "plus header", right, bottom*/
+      pageOrientation = "portrait",
+      content = bodyContent
+      )).open
+    } catch {
+      case e: Exception => println("jcza, my print; exception caught: " + e)
+    }
+  }
+}
+
+/*val parMontosPartida = paragraph ( table = bodyTable (
+                                                   widths = Seq ( 30, 200 ),
+                                                   body = tblMontosPartida,
+                                                   headerRows = 0
+                                                 ), margin = Seq ( 100, 10, 10, 10 )
+                                             )*/
+
+/*val tblMontosPartida = Seq(
+                                  Seq(
+                                      celda(text = "Partida", bold = true, fillColor = sombra, alignment = "center"),
+                                      celda(text = "Monto", bold = true, fillColor = sombra, alignment = "center")
+                                  ): RowDetail
+                              )*/

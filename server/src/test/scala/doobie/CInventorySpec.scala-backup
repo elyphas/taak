@@ -1,0 +1,134 @@
+package testing_doobie
+
+import monix.execution.ExecutionModel.SynchronousExecution
+import monix.execution.Scheduler
+import monix.execution.schedulers.TrampolineScheduler
+
+import org.scalatest.concurrent.ScalaFutures
+import scala.concurrent.ExecutionContext.global
+import org.scalatest.{FlatSpec, Matchers, Tag}
+
+import cats.implicits._
+import doobie.implicits._
+import doobie._
+import doobie_classes.CMyConnection
+import manik1.manik1.shared.EventsDoobie._
+
+import spatutorial.shared.{ItemRecipe, Inventory}
+import doobie_classes.{CItemRecipe, CInventory}
+
+object UpdateInventoryPharmacySpec extends Tag("UpdateInventoryPharmacySpec")
+object InsertInventoryPharmacySpec extends Tag("InsertInventoryPharmacySpec")
+object DeleteInventoryPharmacySpec extends Tag("DeleteInventoryPharmacySpec")
+object SelectInventoryPharmacySpec extends Tag("SelectInventorySpec")
+
+object UpdateInventoryStoreSpec extends Tag("UpdateInventoryStoreSpec")
+object InsertInventoryStoreSpec extends Tag("InsertInventoryStoreSpec")
+object DeleteInventoryStoreSpec extends Tag("DeleteInventoryStoreSpec")
+object SelectInventoryStoreSpec extends Tag("SelectInventoryStoreSpec")
+
+class CInventorySpec extends FlatSpec with Matchers with ScalaFutures {
+
+  implicit val scheduler = TrampolineScheduler(Scheduler.global, SynchronousExecution)
+
+   def runDoobie[A](x: ConnectionIO[A]) = x.transact(myConnection.xa).attempt
+                                          .map(_.leftMap(_.getMessage)).unsafeToFuture
+
+   val myConnection = new CMyConnection
+   val cinv = new CInventory 
+
+   val itemInventoryPharmacy = Inventory( pArea = "pharmacy", pPlace = Some("anaquel1,repisa1"), 
+                                          pKey_item = "002.502.0719", 
+                                          pDescription_item = Some("changos monos y gorilas"),
+                                          pMeasurement_unit = Some("PAQUETE"), 
+                                          pPresentation = Some(10), 
+                                          pPackage_unit_measurement = Some("PIEZA"), 
+                                          pStock = Some(10), pMinimum = Some(10), pMaximum = Some(10))
+
+   val itemInventoryStore = Inventory(    pArea = "store1", pPlace = Some("anaquel1,repisa1"),
+                                          pKey_item = "002.502.0719", 
+                                          pDescription_item = Some("changos monos y gorilas"),
+                                          pMeasurement_unit = Some("PAQUETE"), 
+                                          pPresentation = Some(10), 
+                                          pPackage_unit_measurement = Some("PIEZA"), 
+                                          pStock = Some(10), pMinimum = Some(10), pMaximum = Some(10))
+
+  "Insert value on inventory table in pharmacy" must "be inserted" taggedAs(InsertInventoryPharmacySpec) in {
+       val resultInventory = cinv.insert(itemInventoryPharmacy).update.run
+       val result = runDoobie(resultInventory)    //.transact(myConnection.xa).attempt.map(_.leftMap(_.getMessage)).unsafeToFuture
+       println(result)
+  }
+
+  "Insert value on inventory table in store" must "be inserted" taggedAs(InsertInventoryStoreSpec) in {
+       val resultInventory = cinv.insert(itemInventoryStore).update.run
+       val result = runDoobie(resultInventory)    //.transact(myConnection.xa).attempt.map(_.leftMap(_.getMessage)).unsafeToFuture
+       println(result)
+  }
+
+  "Select value on inventory table" must "be selected" taggedAs(SelectInventoryPharmacySpec) in {
+      val resultInventory = cinv.byId("002.502.0719")
+      val result = runDoobie(resultInventory)     //.attempt.map(_.leftMap(_.getMessage)).unsafeToFuture
+      println("##################   Selected    ######################")
+      println(result)
+  }
+
+  /*"Update value on inventory table" must "be inserted" taggedAs(UpdateInventorySpec) in {
+
+     val item = ItemRecipe(fiscal_period = 2020, folio = "7777", 
+                           key_item = "002.502.0719", description_item = "changos monos y gorilas",
+                           quantity = 1)
+
+     val ctest = new CItemRecipe
+     val event: EventsDoobieWillDo = UpdateDoobie
+     val ctable = new CItemRecipe
+      
+     val resultInventory = event match {
+         case InsertDoobie => //insert item recipe and update inventory
+             for {
+                 _                             <- ctable.insert(item).update.run
+                 (itemInventory, eventResult)  <- cinv.byId(item.key_item)
+                 itemUpdatedInventory          <- cinv
+                            .update(itemInventory.copy(
+                                  stock = itemInventory.stock - item.quantity)
+                            ).update.run
+              } yield {
+                  (item, SavedDoobie(): EventsDoobieResult)
+              }
+          case UpdateDoobie => 
+              for {
+                (itemRecipeLatter, eventResultRecipe) <- ctable.byId(item)
+                 _ <- ctable.delete(item).update.run
+                 (itemInventory, eventResultInventory)  <- cinv.byId(item.key_item)
+                  itemUpdatedInventory          <- cinv
+                            .update(itemInventory.copy(
+                                  stock = (itemInventory.stock + itemRecipeLatter.quantity)
+                                    - item.quantity)
+                            ).update.run
+                  _ <- ctable.insert(item).update.run
+                } yield {
+                   (item, SavedDoobie(): EventsDoobieResult)
+                }
+          case DeleteDoobie =>
+             for {
+                _ <- ctable.delete(item).update.run
+                (itemInventory, eventResult)  <- cinv.byId(item.key_item)
+                 
+                itemUpdatedInventory          <- cinv
+                  .update(itemInventory.copy(
+                      stock = itemInventory.stock + item.quantity)
+                  ).update.run
+             } yield 
+                    (item, DeletedDoobie(): EventsDoobieResult)
+          case FindDoobie =>
+                ctable.byId(item)
+    }
+
+    val result = resultInventory
+                      .transact(myConnection.xa)
+                      .attempt.map(_.leftMap(_.getMessage)).unsafeToFuture
+
+    println(result)
+
+  }*/
+
+}

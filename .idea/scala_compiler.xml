@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ScalaCompilerConfiguration">
+    <profile name="sbt 1" modules="taak,taak_297" />
+    <profile name="sbt 2" modules="outwatch_components">
+      <plugins>
+        <plugin path="$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-js/scalajs-compiler_2.13.12/1.16.0/scalajs-compiler_2.13.12-1.16.0.jar" />
+      </plugins>
+    </profile>
+    <profile name="sbt 3" modules="taak.client">
+      <option name="postfixOps" value="true" />
+      <plugins>
+        <plugin path="$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-js/scalajs-compiler_2.13.13/1.16.0/scalajs-compiler_2.13.13-1.16.0.jar" />
+        <plugin path="$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/com/olegpy/better-monadic-for_2.13/0.3.1/better-monadic-for_2.13-0.3.1.jar" />
+      </plugins>
+    </profile>
+    <profile name="sbt 4" modules="taak.server">
+      <option name="postfixOps" value="true" />
+      <plugins>
+        <plugin path="$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/com/olegpy/better-monadic-for_2.13/0.3.1/better-monadic-for_2.13-0.3.1.jar" />
+      </plugins>
+    </profile>
+    <profile name="sbt 5" modules="taak.shared.sharedJS">
+      <option name="postfixOps" value="true" />
+      <option name="deprecationWarnings" value="true" />
+      <option name="uncheckedWarnings" value="true" />
+      <option name="featureWarnings" value="true" />
+      <option name="explainTypeErrors" value="true" />
+      <parameters>
+        <parameter value="-encoding" />
+        <parameter value="UTF-8" />
+        <parameter value="-language:_" />
+        <parameter value="-Xlint:adapted-args" />
+        <parameter value="-Xlog-implicits" />
+        <parameter value="-Xlint:infer-any" />
+        <parameter value="-Xlint:nullary-unit" />
+        <parameter value="-P:scalajs:mapSourceURI:file:/home/elyphas/Prjs/taak/shared/src/main/scala/-&gt;a1b3b737b47f364f6284/" />
+      </parameters>
+      <plugins>
+        <plugin path="$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-js/scalajs-compiler_2.13.13/1.16.0/scalajs-compiler_2.13.13-1.16.0.jar" />
+      </plugins>
+    </profile>
+    <profile name="sbt 6" modules="taak.shared.sharedJVM">
+      <option name="postfixOps" value="true" />
+      <option name="deprecationWarnings" value="true" />
+      <option name="uncheckedWarnings" value="true" />
+      <option name="featureWarnings" value="true" />
+      <option name="explainTypeErrors" value="true" />
+      <parameters>
+        <parameter value="-encoding" />
+        <parameter value="UTF-8" />
+        <parameter value="-language:_" />
+        <parameter value="-Xlint:adapted-args" />
+        <parameter value="-Xlog-implicits" />
+        <parameter value="-Xlint:infer-any" />
+        <parameter value="-Xlint:nullary-unit" />
+      </parameters>
+    </profile>
+  </component>
+</project>

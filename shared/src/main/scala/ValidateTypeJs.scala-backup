@@ -1,0 +1,258 @@
+package shared
+package mytypes
+
+//case class BatchAndExpiration(batch: String, expiration: Long)
+
+import cats.data.Validated._
+import cats.data.{Validated, ValidatedNel}
+import cats.data.Validated.Valid
+import types.ValidateRecord
+//import cats.data._
+import cats.implicits._
+import encoder_json.types._
+
+//import scala.scalajs.js.{Date => jsDate}
+import java.time.LocalTime
+
+//import java.text.SimpleDateFormat
+//import scala.util.{Failure, Success, Try}
+
+trait ValidateTypeJs {
+    type ItemDocument
+    def validate(item: Map[String, JsonValue]): ItemDocument
+}
+
+object Inputs_ValidateJs extends ValidateRecord {
+
+  val today = LocalTime.now()   //new java.util.Date
+
+  def validate(item: Inputs): ValidatedNel[String, Inputs] = (
+    Validated.condNel(item.user.nonEmpty, item.user, "Usuario invalid@"),
+    Validated.condNel(item.entidad.nonEmpty, item.entidad, "Entidad invalid@"),
+    Validated.condNel(item.id_institution.nonEmpty, item.id_institution, "Area invalid@"),
+    Validated.condNel(item.description_institution.nonEmpty, item.description_institution, "Area invalid@"),
+    Validated.condNel(item.fiscal_period >= 2021, item.fiscal_period, "Año invalido debe ser mayor o igual que 2021"),
+    Validated.condNel(item.folio.nonEmpty, item.folio, "Tipo de documento invalid@"),
+    Validated.condNel(item.type_document.nonEmpty, item.type_document, "Tipo de documento invalid@"),
+    Validated.condNel(item.programa_presupuestal.nonEmpty, item.programa_presupuestal, "Programa presupuestal invalid@"),
+  ).mapN { case (
+                    user_valid,
+                    entidad_valid,
+                    id_area_valid,
+                    area_description_valid,
+                    fiscal_period_valid,
+                    folio_valid,
+                    type_document_valid,
+                    programa_presupuestal_valid,
+              ) => Inputs(
+                        user = user_valid,
+                        entidad = entidad_valid,
+                        id_institution = id_area_valid,
+                        description_institution = area_description_valid,
+                        fiscal_period = fiscal_period_valid,
+                        folio = folio_valid,
+                        type_document = type_document_valid,
+                        programa_presupuestal = programa_presupuestal_valid,
+                        date = item.date,
+                        observation = item.observation
+                  )
+  }
+}
+
+
+object ItemInput_ValidateJs extends ValidateRecord {
+//object ValidateJs {
+
+  //type ItemDocument = ItemInput
+
+  type V[A] = ValidatedNel[String, A]
+
+  //def apply[ItemDocto](implicit itemDocto: ItemDocument) = itemDocto
+
+  //implicit val itemInputDocto =
+
+
+  def validateFiscalPeriod( fiscal_period: JsonValue ): V[Int] = {
+    val fp = fiscal_period match {
+      case JsonInt(value) => value
+      case JsonNull => 0
+    }
+    Option(fp).toValidNel("Ejercicio Fiscal no valido!")
+  }
+
+  def validateTypeDocto(typeDocto: JsonValue): V[String] = {
+    val typeDoct = typeDocto match {
+      case JsonString(value) => value
+      case JsonNull => ""
+    }
+    Validated.condNel(typeDoct.nonEmpty, typeDoct, "Tipo de documento invalido")
+  }
+
+  def validateProgramaPresup(programaPresup: JsonValue): V[String] = {
+    val programa = programaPresup match {
+      case JsonString(value) => value
+      case JsonNull => ""
+    }
+    Validated.condNel(programa.nonEmpty, programa, "Programa presupuestal invalido")
+    //Option(fol).toValidNel("Folio no valido!")  //folio.toIntOption.toValidNel("Folio no valido!")
+  }
+
+  def validateFolio( folio: JsonValue): V[String] = {
+    val fol = folio match {
+      case JsonString(value) => value
+      case JsonNull => ""
+    }
+    Validated.condNel(fol.nonEmpty, fol, "Folio invalido")
+    //Option(fol).toValidNel("Folio no valido!")  //folio.toIntOption.toValidNel("Folio no valido!")
+  }
+
+  def validateKey_Item(key_item: JsonValue): V[String] = {
+    val k = key_item match {
+      case JsonString(value) => value
+      case JsonNull => ""
+    }
+    Validated.condNel(k.nonEmpty, k, "Clave invalida")
+  }
+
+  def validateDescription_Item(description_item: JsonValue): V[String] = {
+      val descrip = description_item match {
+          case JsonString(value) => value
+          case JsonNull => ""
+      }
+      Validated.condNel(descrip.nonEmpty, descrip, "Descripción invalida")
+  }
+
+  def validateMeasurementUnit(measurement_unit: JsonValue ): V[String] = {
+      val meas = measurement_unit match {
+          case JsonString(value) => value
+          case JsonNull => ""
+      }
+      Validated.condNel(meas.nonEmpty, meas, "Unidad de Medida, invalida")
+  }
+
+  def validatePresentation ( presentation: JsonValue ): V[Int] = {
+    val pres = presentation match {
+      case JsonInt(value) => value
+      case JsonNull => 0
+    }
+    Option(pres).toValidNel("Presentación, no valida!")
+  }
+
+  /**def validateString(string: JsonValue): V[String] = {
+    val str = string match {
+      case JsonString(value) => value
+      case JsonNull => ""
+    }
+    Valid(str)
+  }*/
+
+  def validateLong(long: JsonValue): V[Long] = {
+    val l = long match {
+      case JsonLong(value) => value
+      case JsonNull => 0
+    }
+    Valid(l)
+  }
+
+  /**def validateDateFromString(str: JsonValue): V[Long] = {
+        str match {
+            case JsonString(dateStr) =>
+                  Try {
+                      val today: LocalDate = LocalDate.now(ZoneId.of("CST", ZoneId.SHORT_IDS))
+                      val currentYear = today.getYear //new jsDate().getFullYear()
+
+                      val parts = dateStr.split("/")
+
+                      if (parts.length > 2 ) {
+                            val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                            val strFecha: String = parts(2) + "-" + parts(1) + "-" + parts(0)
+                            val date = LocalDate.parse(strFecha, formatter)
+
+                            val zoneId: ZoneId = ZoneId.systemDefault()
+
+                            val epoch: Long = date.atStartOfDay(zoneId).toEpochSecond
+                            epoch
+
+                      } else
+                            throw new Exception("Fecha Invalida!")
+
+                  } match {
+                    case Success(value) =>
+                        Valid(value)
+                    case Failure(exception) =>
+                        println(s"Error al procesar las fechas: ${exception.getMessage}")
+                        Invalid(NonEmptyList.one("¡Fecha invalidad!"))
+                  }
+            case JsonNull => Valid(0)
+        }
+  }*/
+
+  def validateAmount(amount: JsonValue): V[Int] = {
+    val q = amount match {
+      case JsonInt(value) => value
+      case JsonNull => 0
+    }
+    Option(q).toValidNel("Cantidad invalida")
+  }
+
+  def validate(item: Map[String, JsonValue]) = (
+              validateString(item.get("user").getOrElse(JsonNull), "Usuario invalido!"),
+              validateString(item.get("entidad").getOrElse(JsonNull), ),
+              validateString(item.get("id_institution").getOrElse(JsonNull)),
+              validateFiscalPeriod(item.get("fiscal_period").getOrElse(JsonNull)),
+              validateFolio(item.get("folio").getOrElse(JsonNull)),
+              validateTypeDocto(item.get("type_document").getOrElse(JsonNull)),
+              validateProgramaPresup(item.get("programa_presupuestal").getOrElse(JsonNull)),
+              validateKey_Item(item.get("key_item").getOrElse(JsonNull)),
+              validateDescription_Item(item.get("description_item").getOrElse(JsonNull)),
+              validateMeasurementUnit(item.get("measurement_unit").getOrElse(JsonNull)),
+              validatePresentation(item.get("presentation").getOrElse(JsonNull)),
+              validateString(item.get("package_unit_measurement").getOrElse(JsonNull)),
+              validateString(item.get("batch").getOrElse(JsonNull)),
+              //validateDateFromString(item.get("expiration").getOrElse(JsonNull)),
+              validateAmount(item.get("amount").getOrElse(JsonNull))
+    ).mapN { case (
+        user_valid,
+        entidad_valid,
+        id_institution_valid,
+        fiscal_period_valid,
+        folio_valid,
+        typeDocto_valid,
+        programaPresup_valid,
+        key_item_valid,
+        description_item_valid,
+        measurement_unit_valid,
+        presentation_valid,
+        package_unit_measurement_valid,
+        batch_valid,
+        //expiration_valid,
+        amount_valid
+    ) => {
+
+        //validateDateFromString(item.get("expiration").getOrElse(JsonNull)),
+
+        val batchAndExpi = if (batch_valid.length > 0 || expiration_valid > 0)
+                                Some(BatchAndExpiration(batch_valid, expiration_valid))
+                            else
+                                None
+
+        ItemInput (
+              user = user_valid,
+              entidad = entidad_valid,
+              id_institution = id_institution_valid,
+              fiscal_period = fiscal_period_valid,
+              folio = folio_valid,
+              type_document = typeDocto_valid,
+              programa_presupuestal = programaPresup_valid,
+              key_item = key_item_valid,
+              description_item = description_item_valid,
+              measurement_unit = measurement_unit_valid,
+              presentation = if(presentation_valid == 0) None else Some(presentation_valid),
+              package_unit_measurement = if(package_unit_measurement_valid == "") None else Some(package_unit_measurement_valid),
+              batchAndExpiration = batchAndExpi,
+              amount = amount_valid
+        )
+    }
+  }
+
+}

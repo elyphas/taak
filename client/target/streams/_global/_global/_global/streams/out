@@ -1,0 +1,396 @@
+[0m[[0m[0minfo[0m] [0m[0mWriting scalajs.webpack.config.js[0m
+[0m[[0m[0minfo[0m] [0m[0mBundling the application with its NPM dependencies[0m
+[0m[[0m[0mdebug[0m] [0m[0mCommand: node /home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/node_modules/webpack/bin/webpack --profile --json --config /home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/my.custom.webpack.config.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule not found: Error: Can't resolve 'perf_hooks' in '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/cheeseng/git/scalatest/js/scalactic-macro/target/scala-2.13/src_managed/main/org/scalactic/ColCompatHelper.scala' file: Error: ENOENT: no such file or directory, open '/home/cheeseng/git/scalatest/js/scalactic-macro/target/scala-2.13/src_managed/main/org/scalactic/ColCompatHelper.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/cheeseng/git/scalatest/js/scalactic-macro/target/scala-2.13/src_managed/main/org/scalactic/Every.scala' file: Error: ENOENT: no such file or directory, open '/home/cheeseng/git/scalatest/js/scalactic-macro/target/scala-2.13/src_managed/main/org/scalactic/Every.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/cheeseng/git/scalatest/js/scalactic-macro/target/scala-2.13/src_managed/main/org/scalactic/NameUtil.scala' file: Error: ENOENT: no such file or directory, open '/home/cheeseng/git/scalatest/js/scalactic-macro/target/scala-2.13/src_managed/main/org/scalactic/NameUtil.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/cheeseng/git/scalatest/js/scalactic-macro/target/scala-2.13/src_managed/main/org/scalactic/Or.scala' file: Error: ENOENT: no such file or directory, open '/home/cheeseng/git/scalatest/js/scalactic-macro/target/scala-2.13/src_managed/main/org/scalactic/Or.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/cheeseng/git/scalatest/js/scalactic-macro/target/scala-2.13/src_managed/main/org/scalactic/Resources.scala' file: Error: ENOENT: no such file or directory, open '/home/cheeseng/git/scalatest/js/scalactic-macro/target/scala-2.13/src_managed/main/org/scalactic/Resources.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/cheeseng/git/scalatest/js/scalactic-macro/target/scala-2.13/src_managed/main/org/scalactic/source/Position.scala' file: Error: ENOENT: no such file or directory, open '/home/cheeseng/git/scalatest/js/scalactic-macro/target/scala-2.13/src_managed/main/org/scalactic/source/Position.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/cheeseng/git/scalatest/js/scalactic/target/scala-2.13/src_managed/main/org/scalactic/ArrayHelper.scala' file: Error: ENOENT: no such file or directory, open '/home/cheeseng/git/scalatest/js/scalactic/target/scala-2.13/src_managed/main/org/scalactic/ArrayHelper.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/cheeseng/git/scalatest/js/scalactic/target/scala-2.13/src_managed/main/org/scalactic/FailureMessages.scala' file: Error: ENOENT: no such file or directory, open '/home/cheeseng/git/scalatest/js/scalactic/target/scala-2.13/src_managed/main/org/scalactic/FailureMessages.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/cheeseng/git/scalatest/js/scalactic/target/scala-2.13/src_managed/main/org/scalactic/Prettifier.scala' file: Error: ENOENT: no such file or directory, open '/home/cheeseng/git/scalatest/js/scalactic/target/scala-2.13/src_managed/main/org/scalactic/Prettifier.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/cheeseng/git/scalatest/js/scalactic/target/scala-2.13/src_managed/main/org/scalactic/Requirements.scala' file: Error: ENOENT: no such file or directory, open '/home/cheeseng/git/scalatest/js/scalactic/target/scala-2.13/src_managed/main/org/scalactic/Requirements.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/cheeseng/git/scalatest/js/scalactic/target/scala-2.13/src_managed/main/org/scalactic/UnquotedString.scala' file: Error: ENOENT: no such file or directory, open '/home/cheeseng/git/scalatest/js/scalactic/target/scala-2.13/src_managed/main/org/scalactic/UnquotedString.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/cheeseng/git/scalatest/js/scalactic/target/scala-2.13/src_managed/main/org/scalactic/exceptions/NullArgumentException.scala' file: Error: ENOENT: no such file or directory, open '/home/cheeseng/git/scalatest/js/scalactic/target/scala-2.13/src_managed/main/org/scalactic/exceptions/NullArgumentException.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/circe_codec/Circe_codec.scala' file: Error: ENOENT: no such file or directory, open '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/circe_codec/Circe_codec.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/shared/TodoItem.scala' file: Error: ENOENT: no such file or directory, open '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/shared/TodoItem.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/ArticuloStock.scala' file: Error: ENOENT: no such file or directory, open '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/ArticuloStock.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/Inputs.scala' file: Error: ENOENT: no such file or directory, open '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/Inputs.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/Institution.scala' file: Error: ENOENT: no such file or directory, open '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/Institution.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/Recipe.scala' file: Error: ENOENT: no such file or directory, open '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/Recipe.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/TypeDocument.scala' file: Error: ENOENT: no such file or directory, open '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/TypeDocument.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/TypesArticulos.scala' file: Error: ENOENT: no such file or directory, open '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/TypesArticulos.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/TypesJson.scala' file: Error: ENOENT: no such file or directory, open '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/TypesJson.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/Users.scala' file: Error: ENOENT: no such file or directory, open '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/Users.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/ValidateRecord.scala' file: Error: ENOENT: no such file or directory, open '/home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main/a1b3b737b47f364f6284/types/ValidateRecord.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/ExceptionInfo.scala' file: Error: ENOENT: no such file or directory, open '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/ExceptionInfo.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/LogThreshold.scala' file: Error: ENOENT: no such file or directory, open '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/LogThreshold.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/LoggedEvent.scala' file: Error: ENOENT: no such file or directory, open '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/LoggedEvent.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/LoggerParser.scala' file: Error: ENOENT: no such file or directory, open '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/LoggerParser.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/Log4s.scala' file: Error: ENOENT: no such file or directory, open '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/Log4s.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/Log4sConfig.scala' file: Error: ENOENT: no such file or directory, open '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/Log4sConfig.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/Log4sConsoleAppender.scala' file: Error: ENOENT: no such file or directory, open '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/Log4sConsoleAppender.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/Log4sLoggerFactory.scala' file: Error: ENOENT: no such file or directory, open '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/Log4sLoggerFactory.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/Log4sMDC.scala' file: Error: ENOENT: no such file or directory, open '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/Log4sMDC.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/MessageFormatter.scala' file: Error: ENOENT: no such file or directory, open '/home/ross/src/log4s/core/js/src/main/scala/org/log4s/log4sjs/MessageFormatter.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/ross/src/log4s/core/js/src/main/scala/org/slf4j/Logger.scala' file: Error: ENOENT: no such file or directory, open '/home/ross/src/log4s/core/js/src/main/scala/org/slf4j/Logger.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/ross/src/log4s/core/js/src/main/scala/org/slf4j/LoggerFactory.scala' file: Error: ENOENT: no such file or directory, open '/home/ross/src/log4s/core/js/src/main/scala/org/slf4j/LoggerFactory.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/ross/src/log4s/core/js/src/main/scala/org/slf4j/MDC.scala' file: Error: ENOENT: no such file or directory, open '/home/ross/src/log4s/core/js/src/main/scala/org/slf4j/MDC.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/ross/src/log4s/core/shared/src/main/scala-newcoll/org/log4s/MDC.scala' file: Error: ENOENT: no such file or directory, open '/home/ross/src/log4s/core/shared/src/main/scala-newcoll/org/log4s/MDC.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/ross/src/log4s/core/shared/src/main/scala/org/log4s/LogLevel.scala' file: Error: ENOENT: no such file or directory, open '/home/ross/src/log4s/core/shared/src/main/scala/org/log4s/LogLevel.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/sbt-locales/sbt-locales/api/src/main/scala/locales/cldr/calendar.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/sbt-locales/sbt-locales/api/src/main/scala/locales/cldr/calendar.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/sbt-locales/sbt-locales/api/src/main/scala/locales/cldr/cldr.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/sbt-locales/sbt-locales/api/src/main/scala/locales/cldr/cldr.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/sbt-locales/sbt-locales/api/src/main/scala/locales/cldr/currency.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/sbt-locales/sbt-locales/api/src/main/scala/locales/cldr/currency.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/sbt-locales/sbt-locales/api/src/main/scala/locales/cldr/number.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/sbt-locales/sbt-locales/api/src/main/scala/locales/cldr/number.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/sbt-locales/sbt-locales/api/src/main/scala/locales/cldr/provider.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/sbt-locales/sbt-locales/api/src/main/scala/locales/cldr/provider.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/scala-java-locales/scala-java-locales/localesMinimalEnUSDb/js/target/scala-2.11/src_managed/main/locales/cldr/data/currencydata.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/scala-java-locales/scala-java-locales/localesMinimalEnUSDb/js/target/scala-2.11/src_managed/main/locales/cldr/data/currencydata.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/scala-java-locales/scala-java-locales/localesMinimalEnUSDb/js/target/scala-2.11/src_managed/main/locales/cldr/data/data.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/scala-java-locales/scala-java-locales/localesMinimalEnUSDb/js/target/scala-2.11/src_managed/main/locales/cldr/data/data.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/scala-java-locales/scala-java-locales/localesMinimalEnUSDb/js/target/scala-2.11/src_managed/main/locales/cldr/data/metadata.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/scala-java-locales/scala-java-locales/localesMinimalEnUSDb/js/target/scala-2.11/src_managed/main/locales/cldr/data/metadata.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/scala-java-locales/scala-java-locales/localesMinimalEnUSDb/js/target/scala-2.11/src_managed/main/locales/cldr/data/numericsystems.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/scala-java-locales/scala-java-locales/localesMinimalEnUSDb/js/target/scala-2.11/src_managed/main/locales/cldr/data/numericsystems.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/scala-java-locales/scala-java-locales/localesMinimalEnUSDb/js/target/scala-2.11/src_managed/main/locales/cldr/ldmlprovider.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/scala-java-locales/scala-java-locales/localesMinimalEnUSDb/js/target/scala-2.11/src_managed/main/locales/cldr/ldmlprovider.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/shapeless/shapeless/core/js/target/scala-2.13/src_managed/main/shapeless/nats.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/shapeless/shapeless/core/js/target/scala-2.13/src_managed/main/shapeless/nats.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/coproduct.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/coproduct.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/generic.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/generic.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/hlists.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/hlists.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/labelled.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/labelled.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/lazy.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/lazy.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/nat.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/nat.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/ops/coproduct.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/ops/coproduct.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/ops/hlists.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/ops/hlists.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/ops/records.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/ops/records.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/package.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/package.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/singletons.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/singletons.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/syntax/hlists.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/syntax/hlists.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/typeoperators.scala' file: Error: ENOENT: no such file or directory, open '/home/runner/work/shapeless/shapeless/core/src/main/scala/shapeless/typeoperators.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map from '/localhome/doeraene/projects/reflect/js/src/main/scala/org/portablescala/reflect/Reflect.scala' file: Error: ENOENT: no such file or directory, open '/localhome/doeraene/projects/reflect/js/src/main/scala/org/portablescala/reflect/Reflect.scala'[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/cornerman/colibri/raw/04c09c11e56e777ea4551d99c175abeea9febcaa/colibri/src/main/scala/colibri/CanCancel.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/cornerman/colibri/raw/04c09c11e56e777ea4551d99c175abeea9febcaa/colibri/src/main/scala/colibri/Cancelable.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/cornerman/colibri/raw/04c09c11e56e777ea4551d99c175abeea9febcaa/colibri/src/main/scala/colibri/Connectable.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/cornerman/colibri/raw/04c09c11e56e777ea4551d99c175abeea9febcaa/colibri/src/main/scala/colibri/Observable.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/cornerman/colibri/raw/04c09c11e56e777ea4551d99c175abeea9febcaa/colibri/src/main/scala/colibri/ObservableLike.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/cornerman/colibri/raw/04c09c11e56e777ea4551d99c175abeea9febcaa/colibri/src/main/scala/colibri/Observer.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/cornerman/colibri/raw/04c09c11e56e777ea4551d99c175abeea9febcaa/colibri/src/main/scala/colibri/Sink.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/cornerman/colibri/raw/04c09c11e56e777ea4551d99c175abeea9febcaa/colibri/src/main/scala/colibri/Source.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/cornerman/colibri/raw/04c09c11e56e777ea4551d99c175abeea9febcaa/colibri/src/main/scala/colibri/Subject.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/cornerman/colibri/raw/04c09c11e56e777ea4551d99c175abeea9febcaa/colibri/src/main/scala/colibri/SubscriptionOwner.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/cornerman/colibri/raw/04c09c11e56e777ea4551d99c175abeea9febcaa/colibri/src/main/scala/colibri/effect/RunEffect.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/cornerman/colibri/raw/04c09c11e56e777ea4551d99c175abeea9febcaa/colibri/src/main/scala/colibri/effect/RunEffectExecution.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/cornerman/colibri/raw/04c09c11e56e777ea4551d99c175abeea9febcaa/colibri/src/main/scala/colibri/effect/RunSyncEffect.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/cornerman/colibri/raw/04c09c11e56e777ea4551d99c175abeea9febcaa/colibri/src/main/scala/colibri/effect/SyncEmbed.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/cornerman/colibri/raw/04c09c11e56e777ea4551d99c175abeea9febcaa/colibri/src/main/scala/colibri/helpers/JSArrayHelper.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/cornerman/colibri/raw/04c09c11e56e777ea4551d99c175abeea9febcaa/colibri/src/main/scala/colibri/helpers/UnhandledErrorReporter.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/outwatch/outwatch/raw/d94cdf9f073eec35f48683c3fadba5b6446e3e7f/outwatch/src/main/scala/outwatch/AttrBuilder.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/outwatch/outwatch/raw/d94cdf9f073eec35f48683c3fadba5b6446e3e7f/outwatch/src/main/scala/outwatch/ChildCommand.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/outwatch/outwatch/raw/d94cdf9f073eec35f48683c3fadba5b6446e3e7f/outwatch/src/main/scala/outwatch/EmitterBuilder.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/outwatch/outwatch/raw/d94cdf9f073eec35f48683c3fadba5b6446e3e7f/outwatch/src/main/scala/outwatch/Outwatch.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/outwatch/outwatch/raw/d94cdf9f073eec35f48683c3fadba5b6446e3e7f/outwatch/src/main/scala/outwatch/Render.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/outwatch/outwatch/raw/d94cdf9f073eec35f48683c3fadba5b6446e3e7f/outwatch/src/main/scala/outwatch/VMod.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/outwatch/outwatch/raw/d94cdf9f073eec35f48683c3fadba5b6446e3e7f/outwatch/src/main/scala/outwatch/definitions/DomTypes.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/outwatch/outwatch/raw/d94cdf9f073eec35f48683c3fadba5b6446e3e7f/outwatch/src/main/scala/outwatch/definitions/OutwatchAttributes.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/outwatch/outwatch/raw/d94cdf9f073eec35f48683c3fadba5b6446e3e7f/outwatch/src/main/scala/outwatch/dsl.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/outwatch/outwatch/raw/d94cdf9f073eec35f48683c3fadba5b6446e3e7f/outwatch/src/main/scala/outwatch/helpers/MutableNestedArray.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/outwatch/outwatch/raw/d94cdf9f073eec35f48683c3fadba5b6446e3e7f/outwatch/src/main/scala/outwatch/helpers/NativeHelpers.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/outwatch/outwatch/raw/d94cdf9f073eec35f48683c3fadba5b6446e3e7f/outwatch/src/main/scala/outwatch/helpers/OutwatchTracing.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/outwatch/outwatch/raw/d94cdf9f073eec35f48683c3fadba5b6446e3e7f/outwatch/src/main/scala/outwatch/helpers/StatefulOberver.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/outwatch/outwatch/raw/d94cdf9f073eec35f48683c3fadba5b6446e3e7f/outwatch/src/main/scala/outwatch/interpreter/ModifierToSnabbdom.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/outwatch/outwatch/raw/d94cdf9f073eec35f48683c3fadba5b6446e3e7f/outwatch/src/main/scala/outwatch/interpreter/SnabbdomOps.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/outwatch/outwatch/raw/d94cdf9f073eec35f48683c3fadba5b6446e3e7f/outwatch/src/main/scala/outwatch/package.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[33mwarn[0m] [0m[0mWARNING in ./client-fastopt.js[0m
+[0m[[0m[33mwarn[0m] [0m[0mModule Warning (from ./node_modules/source-map-loader/dist/cjs.js):[0m
+[0m[[0m[33mwarn[0m] [0m[0mFailed to parse source map: 'https://github.com/outwatch/outwatch/raw/d94cdf9f073eec35f48683c3fadba5b6446e3e7f/snabbdom/src/main/scala/snabbdom/Snabbdom.scala' URL is not supported[0m
+[0m[[0m[33mwarn[0m] [0m[0m[0m
+[0m[[0m[0minfo[0m] [0m[0mVersion: 5.75.0[0m
+[0m[[0m[0minfo[0m] [0m[0mHash: 5f2d76ddb14f96de48ce[0m
+[0m[[0m[0minfo[0m] [0m[0mTime: 2516ms[0m
+[0m[[0m[0minfo[0m] [0m[0mPath: /home/elyphas/Prjs/taak/client/target/scala-2.13/scalajs-bundler/main[0m
+[0m[[0m[0minfo[0m] [0m[0m                   Asset        Size                         Chunks[0m
+[0m[[0m[0minfo[0m] [0m[0mclient-fastopt-bundle.js   10.25 MiB   [emitted]   [client-fastopt][0m

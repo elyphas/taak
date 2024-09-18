@@ -1,0 +1,108 @@
+package manik1.modules
+
+import boopickle.Default._
+import cats.effect.SyncIO
+import com.raquo.domtypes.jsdom.defs.events.TypedTargetMouseEvent
+import org.scalajs.dom.Element
+import spatutorial.shared.Usuarios
+import org.scalajs.dom.html
+import org.scalajs.dom.window.alert
+import outwatch_components.inputs._
+
+import scala.util.{Failure, Success}
+import cats.implicits._
+import manik1.services.{WSCovenant, WSMyCelium}
+import org.scalajs.dom.raw.MouseEvent
+import manik1.gridCatalogs.GridCatalog
+import outwatch_components.GridCatalogs
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.duration._
+import manik1.manik1.shared.EventsDoobie._
+import monix.execution.{Cancelable, Scheduler}
+import monix.reactive.Observable
+import colibri.ext.monix._
+import colibri.ext.monix.ops._
+import colibri._
+import outwatch.reactive.handlers.monix._
+import outwatch._
+import outwatch.dsl.{span => sp, _}
+import scribe.Logger
+
+/*************************      for Mycelium    *************************/
+import mycelium.client._
+import chameleon.ext.boopickle._
+import java.nio.ByteBuffer
+/************************************************************************/
+
+import manik1.store.StoreUsers
+
+class FrmLoggin(implicit ec: ExecutionContext, s: Scheduler) {
+
+  type MainItem = Usuarios
+  val mainItem = Usuarios()
+
+  val hdlMainItem = Handler.create[MainItem](mainItem).unsafeRunSync()
+  hdlMainItem.onNext(mainItem)
+
+  val hdlNameUser = hdlMainItem.lens[String](mainItem)(_.usuario)((state, newState) => state.copy(usuario = newState))
+  val cancelableNameUser = hdlNameUser.connect()
+
+  val hdlPassword = hdlMainItem.lens[String](mainItem)(_.contraseña)((state, newState) => state.copy(contraseña = newState))
+  val cancelablePassword = hdlPassword.connect()
+
+  /*************************************************************************************************************/
+
+  val onLoggin = Observer.create[MainItem] { item =>
+                      Logger.root.clearHandlers()
+                      WSCovenant.api.loggin(item).foreach {
+                        case Right(value) => StoreUsers.store.onNext(StoreUsers.UpdateUser(value))
+                        case Left(value) => hdlProcessingSideEffects.onNext("Usuario o contraseña invalido!!!!")
+                      }
+        }
+
+  def menuButtons = div( cls := "groupControls",
+                      button( id := "cmdLoggin", "Loggin", cls := "myButton",
+                          onClick.transformLifted{ e: Observable[ MouseEvent ] =>
+                              e.withLatestFrom(hdlMainItem){ case (event@_, item) => item }
+                          } --> onLoggin
+                      )
+                    )
+
+  val vdomTxt = VDomModifier(width := "80px", marginRight := "30px", textAlign := "center")
+  val vdomTxtArea = VDomModifier(width := "300px")
+
+  def txtNameUser = cmpInput("Usuario", hdlNameUser, VDomModifier(vdomTxt, width:="90px"), None)
+
+  def txtPassword = cmpPasswrod("Contraseña", hdlPassword, vdomTxt, None)
+
+  val hdlProcessingSideEffects = Handler.create[String]("").unsafeRunSync()
+
+  def processingSideEffects = hdlProcessingSideEffects.map {
+      case "" => None
+      case msg => Some(div( clear.both, cls:="processingSideEffects", msg))
+  }
+
+  def renderRaw = div ( 
+                    id := "pageForm",
+                    //connectOtherComponents,
+                    div(cls := "inner-shadow", sp("Logear")),
+                      processingSideEffects,
+                      div(cls := "groupControls",
+                        txtNameUser,
+                        txtPassword
+                      ),
+                      div(cls := "menuButtons",
+                        button ("Aceptar", cls := "myButton",
+                          onClick.transformLifted { e: Observable[MouseEvent] =>
+                            e.withLatestFrom(hdlMainItem) { case (event, item) =>
+                              item
+                            }
+                          } --> onLoggin
+                        )
+                      )
+                    )
+
+  def render = colibri.Observable(renderRaw)
+
+}

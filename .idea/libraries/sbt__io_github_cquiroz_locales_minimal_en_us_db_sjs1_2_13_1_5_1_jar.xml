@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="sbt: io.github.cquiroz:locales-minimal-en_us-db_sjs1_2.13:1.5.1:jar" external-system-id="SBT">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/io/github/cquiroz/locales-minimal-en_us-db_sjs1_2.13/1.5.1/locales-minimal-en_us-db_sjs1_2.13-1.5.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/io/github/cquiroz/locales-minimal-en_us-db_sjs1_2.13/1.5.1/locales-minimal-en_us-db_sjs1_2.13-1.5.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

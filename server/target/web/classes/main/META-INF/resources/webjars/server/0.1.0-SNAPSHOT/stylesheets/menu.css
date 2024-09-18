@@ -1,0 +1,191 @@
+.scroll {
+    overflow:   scroll;
+    display:    block;
+    height:     200px;
+}
+
+.hiperlink {
+        text-decoration: underline;
+        color:           blue;
+        cursor: pointer;
+}
+
+.itemMenu {
+        display:            block;
+        cursor:             pointer;
+        width:              100%;
+        /*clear:              both; */
+        float:              left;
+        padding:            5px;
+        background-color:   #f7927c;
+        border:             1px solid;
+        border-color:        #919393;
+}
+
+.itemMenu:hover {
+        background-color: #94f4e8;
+        width:              50%;
+}
+
+.menuDropDown:hover {
+        background-color: #94f4e8;
+}
+
+.itemMenuDropDown:hover {
+        display:            inline;
+        background-color:   #94f4e8;
+}
+
+.menuDropDown {     /**     Menu Principal      **/
+        font-size:          large;   /*Solo funciona de este modo, con px o %, no funciona.      */
+        display:            block;
+        float:              left;
+        padding:            5px;
+        width:              8%;
+        background-color:   #f7927c;
+        border:             1px solid;
+        border-color:       #919393;
+        text-align:     center;
+}
+
+/** submenus */
+.menuDropDown:hover .menuDropDown2 {
+    display:        inline;
+    /*-moz-box-shadow: 10px 10px 5px #888;      */
+    /*-webkit-box-shadow: 10px 10px 5px #888;      */
+    box-shadow:     10px 10px 10px #666;
+    margin-left:    -52px;
+    margin-top:     18px;
+    z-index:        1000;
+    position:       absolute;
+    width:          10%;
+    text-align:     start;
+}
+
+.itemMenuDropDown {
+    display:            inline;
+    cursor:             pointer;
+    float:              left;
+    width:              70%;
+    padding:            5px;
+    background-color:   #f7927c;
+    font-size:          large;
+    border:             1px solid;
+    border-color:       #919393;
+}
+
+.menuDropDown2 {
+    font-size:      large;
+    display:        none;
+    float:          left;
+    width:          70%;
+    margin-left:    0px;
+    /*padding: 5px;     */
+    /*background-color: #f7927c;    /*
+    /*border: 1px solid;        */
+    /*/borderColor: #919393;
+}
+
+.zoom {
+      /*padding: 50px;*/
+      /*background-color: green;*/
+      transition: transform .2s; /* Animation */
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      margin: 0 auto;
+}
+
+.zoom:active {
+    /* (1300% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+    transform: translate(100px, 0px) scale(20);
+}
+
+#mainMenu {
+    /*font-size: small;     */
+    display: inline;
+}
+
+#mainMenu:hover {
+    border-top:     4px solid #ffffff;
+    border-bottom:  4px solid #ffffff;
+    padding:        6px 0;
+}
+
+input:active, input:hover, input:focus, button:hover, button:focus {
+    background-color: #E9D1FF;  /*#d4d6d6;      */
+    /*color: #F1F7C3; //#dc2f51;    */
+    /*border: 3px solid #ccc;   */
+    /*outline: none;        */
+    /*outline-width: 0.1px;     */
+    box-sizing: border-box;
+    outline-color: #32a1ce;
+    outline: 2px ridge rgba(170, 50, 220, .6);
+    border-radius: 2rem;
+
+    /*borderColor: black;       */
+    /*border-width: thin;       */
+}
+
+.selectedRow {
+    background-color:   white;
+}
+
+.selectall {
+    -webkit-user-select:    all;  /* Chrome 49+ */
+    -moz-user-select:       all;     /* Firefox 43+ */
+    -ms-user-select:        all;      /* No support yet */
+    user-select:            all;
+}
+
+#control {
+    background-color: #e7bbc4;
+}
+
+#actionsMenu {
+    clear: both;
+    background-color: #e7bbc4;
+    width: 200%;
+    padding-top: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.select_join {
+    width: 170%;
+    height: 28%;
+    overflow: hidden;
+    background: url('http://s24.postimg.org/lyhytocf5/dropdown.png') no-repeat right #FEFEFE;
+    border: #FEFEFE 1px solid;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: inset 0px 0px 10px 1px #FEFEFE;
+    box-shadow: inset 0px 0px 10px 1px #FEFEFE;
+}
+
+.select_join select {
+   background: transparent;
+   width:               170%;
+   font-size:           7pt;
+   color:               grey;
+   border:              0;
+   border-radius:       0;
+   height:              28px;
+   -webkit-appearance:  none;
+}
+
+.select_join select:focus {
+    outline: none;
+}
+
+.MenuActions {
+    clear:          both;
+    marginLeft:     30px;
+    marginTop:      15px;
+}
+
+.box {
+	background-color: #789;
+	border: 3px solid black;
+	box-shadow: 8px -8px 0 -3px #ccc, 18px -8px 0 0 #000;
+}

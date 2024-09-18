@@ -1,0 +1,22 @@
+package manik1.modules
+
+// import monix.reactive.Observable
+import colibri.Observable
+import outwatch._
+import outwatch.dsl._
+
+
+
+class FrmHelp {
+
+  def render =
+    colibri.Observable(
+      div( id := "pageForm",
+        h5("Ayuda para generar reportes"),
+        p(
+          "Introducir en los cuadros correspondientes los datos que desee consultar."
+        )
+      )
+    )
+
+}

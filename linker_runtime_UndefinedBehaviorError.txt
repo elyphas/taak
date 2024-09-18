@@ -1,0 +1,4 @@
+$c_Lorg_scalajs_linker_runtime_UndefinedBehaviorError
+
+
+Falta implentar algún metodo de la clase padre

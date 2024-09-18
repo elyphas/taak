@@ -1,0 +1,3 @@
+[0m[[0m[0mdebug[0m] [0m[0mResolved the following dependencies: List((setimmediate,1.0.5), (snabbdom,github:outwatch/snabbdom.git#semver:0.7.5), (punycode,2.1.1))[0m
+[0m[[0m[0mdebug[0m] [0m[0mResolved the following dependencies: List((source-map-loader,2.0.0), (webpack,5.75.0), (concat-with-sourcemaps,1.0.7), (webpack-cli,4.5.0), (webpack-dev-server,3.11.2))[0m
+[0m[[0m[0mdebug[0m] [0m[0mWriting 'package.json'[0m

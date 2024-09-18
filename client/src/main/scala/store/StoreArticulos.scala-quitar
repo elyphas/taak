@@ -1,0 +1,64 @@
+package manik1.store
+
+import monix.execution.Scheduler.Implicits.global
+import cats.effect.IO
+import manik1.services.WSCovenant
+import outwatch.util.{Store, Reducer}
+import monix.reactive.Observable
+
+import spatutorial.shared.LstItems
+import spatutorial.shared.Articulo
+
+class StoreArticulos {
+
+  sealed trait ActionsStore
+
+  case object Clean extends ActionsStore
+  case object Search extends ActionsStore
+
+  case class UpdatedItem(item: Articulo) extends ActionsStore
+
+  case object ServerSuccess extends ActionsStore
+  case class ServerFailure(msg: String) extends ActionsStore
+
+  case class State( item: Articulo = Articulo(),
+                    processingSideEffect: Option[String] = None,
+                    messageFromServer: Option[String] = None  )
+
+  // val reduce: (State, ActionsStore) => (State, Observable[ActionsStore]) = (s, a) => {
+  val reduce: Reducer[ActionsStore, State] = Reducer{
+    // a match {
+      case (s, Clean) => 
+          // (
+            s.copy(item = Articulo())
+            // , Observable.empty)
+      case (s, UpdatedItem(i)) => 
+          // (
+            s.copy(item = i)
+          // , Observable.empty)
+
+      /*case ServerFailure(msg) =>
+        (s.copy(  tenderers = LstItems(List.empty[Tenderer]),
+                  messageFromServer = Some(msg),
+                  processingSideEffect = None
+                )  , Observable.empty)
+      case ServerSuccess =>
+        (s.copy(messageFromServer = None,
+                processingSideEffect = None
+              ) , Observable.empty)
+        */
+    // }
+  }
+
+  /*def getTenderers(id: String) =
+    Observable.fromFuture(
+      WSCovenant.api.getTenderers(Some(id)).map {
+        case Right(value) => UpdateTenderers(LstItems(value :+ Tenderer()))
+        case Left(value) => ServerFailure(value)
+      }
+    )*/
+
+  val initState = State()
+  val store = Store.create[IO](Clean, initState, reduce).unsafeRunSync()
+
+}

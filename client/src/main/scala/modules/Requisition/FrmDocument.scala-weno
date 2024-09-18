@@ -1,0 +1,399 @@
+package manik1.modules.requisitions
+
+import cats.effect.SyncIO
+import cats.implicits._
+
+import cats.effect.IO
+import scala.concurrent.ExecutionContext
+
+import spatutorial.shared.{ItemRequisition, Requisition}
+import org.scalajs.dom.{Blob, FileReader, URL, document, html, window}
+import org.scalajs.dom.raw.MouseEvent
+import org.scalajs.dom.window.alert
+import org.scalajs.dom.raw.BlobPropertyBag
+import com.github.marklister.base64.Base64._
+
+import scala.scalajs.js.typedarray.{TypedArrayBuffer, Uint8Array}
+import outwatch_components.inputs._
+
+import scala.util.{Failure, Success}
+
+import scala.concurrent.duration._
+import outwatch._
+import outwatch.dsl.{value, span => sp, _}
+
+import scala.scalajs.js.{Date => jsDate}
+import java.util.Date
+import manik1.manik1.shared.EventsDB._
+import encoder_json.types._
+
+import java.nio.ByteBuffer
+import scala.scalajs.js
+import scala.scalajs.js.JSConverters.iterableOnceConvertible2JSRichIterableOnce
+//import fs2.Chunk.ByteBuffer
+import manik1.modules.FrmMainItem
+//import teotl.typeclass.show._
+
+import scala.concurrent.Future
+import scala.util.{Failure, Success, Try}
+import manik1.repositories._
+import org.scalajs.dom
+import org.scalajs.dom.html
+import repositories.CreateFileRepository
+
+class FrmDocument( implicit
+                          repoDocument: RepositoryDocument[Requisition],
+                          repoItem: RepositoryItemDocument[ItemRequisition],
+                          repoLstItem: RepositoryLstItemsDocument[Requisition, ItemRequisition]
+      ) extends FrmMainItem[Requisition] {
+
+  implicit val contextShift: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
+
+  val today = new jsDate
+
+  type Item = Requisition
+  val item: Requisition = Requisition(fiscal_period = today.getFullYear.toInt)
+
+  val hdlMainItem = Handler.create[Item](item).unsafeRunSync()
+  hdlMainItem.onNext(item)
+
+  val hdlUser = hdlMainItem.lens[String](item)(_.user)((state, newState) => state.copy(user = newState))
+  val cancelableUser = hdlUser.connect()
+
+  val hdlEntidad = hdlMainItem.lens[String](item)(_.entidad)((state, newState) => state.copy(entidad = newState))
+  val cancelableEntidad = hdlEntidad.connect()
+
+  val hdlIdArea = hdlMainItem.lens[String](item)(_.id_area)((state, newState) => state.copy(id_area = newState))
+  val cancelableIdArea = hdlIdArea.connect()
+
+  val hdlFiscalPeriod = hdlMainItem.lens[Int](item)(_.fiscal_period)((state, newState) => state.copy(fiscal_period = newState))
+  val cancelableFiscalPeriod = hdlFiscalPeriod.connect()
+
+  val hdlFolio = hdlMainItem.lens[String](item)(_.folio)((state, newState) => state.copy(folio = newState))
+  val cancelableFolio = hdlFolio.connect()
+
+  val hdlTypeDocument = hdlMainItem.lens[String](item)(_.type_document)((state, newState) => state.copy(type_document = newState))
+  val cancelableTypeDocument = hdlTypeDocument.connect()
+
+  val hdlDate = hdlMainItem.lens[Long](item)(_.date)((state, newState) => state.copy(date = newState))
+  val cancelableDate = hdlDate.connect()
+
+  val hdlObservacion = hdlMainItem.lens[String](item)(_.observation.getOrElse(""))((state, newState) =>
+                                                                                  state.copy(observation = Some(newState)))
+  val cancelableObservacion = hdlObservacion.connect()
+
+  /*val getId = (hdlFiscalPeriod: Observable[Int], hdlFolio: Observable[String])
+                  .parMapN { case (fiscalPeriod, folio) =>
+                       (fiscalPeriod, folio)
+                  }*/
+
+  val getId = (
+                      hdlUser: Observable[String],
+                      hdlEntidad: Observable[String],
+                      hdlIdArea: Observable[String],
+                      hdlFiscalPeriod: Observable[Int],
+                      hdlFolio: Observable[String],
+                      hdlMainItem: Observable[Requisition],
+                )
+                .parMapN { case (
+                              arg_user,
+                              arg_entidad,
+                              arg_id_area,
+                              arg_fiscal_period,
+                              arg_folio,
+                              arg_mainItem
+                        ) =>
+                              arg_mainItem.copy(
+                                    user = arg_user,
+                                    entidad = arg_entidad,
+                                    id_area = arg_id_area,
+                                    fiscal_period = arg_fiscal_period,
+                                    folio = arg_folio
+                              )
+                }.filter { item =>
+
+                      println("En el filter")
+                      println(item)
+
+                      item.user.length > 0 &&
+                      item.entidad.length > 0 &&
+                      item.fiscal_period > 2000 &&
+                      item.folio.length > 0
+                }
+
+  val getMainItem = (hdlMainItem: Observable[Item], hdlNew: Observable[Boolean])
+                          .parMapN { case (item: Item, isNew: Boolean) =>
+                                (item, isNew)
+                          }
+
+  val onNew = colibri.Observer.combineVaried (
+                  colibri.Observer.combineVaried (
+                          hdlMainItem.contramap[String](x => item),
+                          hdlProcessingSideEffects.contramap[String](x => "Nuevo")
+                  ),
+                  hdlNew.contramap[String](x => true)
+              )
+
+  def menuButtons = div( cls := "groupControls", marginTop := "20px",
+                button( idAttr := "cmdSave", "Guardar", cls := "myButton",
+                   onClick
+                       .transformLifted { e: monix.reactive.Observable[MouseEvent] =>
+                             e.withLatestFrom(getMainItem)
+                             { case (event@_, (item, isNew)) =>
+                                    println("Changos monos y gorilas !!!!!!!!!!!!!")
+                                    (item, (if (isNew) InsertDB else UpdateDB))
+                             }
+                   } --> repoDocument.eventDocument,
+                ),
+                button( idAttr := "cmdSearch", "Buscar", cls := "myButton",
+                   onClick.transformLifted { e: Observable[MouseEvent] =>
+                       e.withLatestFrom(getMainItem){ case (event@_, (item, isNew)) =>
+                              println(s"Antes de buscar")
+                              println(item)
+
+                              (item, FindDB)
+                       }
+                   } --> repoDocument.eventDocument,
+                ),
+                button( idAttr := "cmdDelete", "Borrar", cls := "myButton",
+                   onClick.transformLifted { e: Observable[MouseEvent] =>
+                       e.withLatestFrom(getMainItem){ case (event@_, (item, isNew)) =>
+                             (item, DeleteDB)
+                       }
+                   } --> repoDocument.eventDocument,
+                ),
+                button( id := "cmdNew", "Nuevo", cls := "myButton",
+                        onClick.use("") --> onNew)
+          )
+
+  val observDBResults = new Observer[Either[String, (Requisition, Requisition, EventsDBResult)]] {
+    def onNext(elem: Either[String, (Item, Item, EventsDBResult)]): Future[Ack] = {
+        Try {
+            elem match {
+              case Right((oldDoc, newDoc, event)) =>
+                    event match {
+                         case SavedDB(msg@_) =>
+                              hdlMainItem.onNext(newDoc)
+                              hdlNew.onNext(false)
+                         case DeletedDB(msg@_) =>
+                              hdlMainItem.onNext(newDoc)
+                              hdlNew.onNext(true)
+                         case FoundDB(msg) =>
+                              hdlMainItem.onNext(newDoc)
+                              hdlNew.onNext(false)
+                         case NotFoundDB(msg) => hdlNew.onNext(true)
+                         case ErrorDB(msg) => hdlNew.onNext(true)
+                    }
+                    hdlProcessingSideEffects.onNext(event.msg)
+              case Left(error) => 
+                  hdlProcessingSideEffects.onNext(error)
+            }
+        } match {
+          case Success(value) => 
+             value
+          case Failure(exception) => 
+             alert("Error en observEventListItems: FrmDocument" + exception.getMessage)
+       }
+       Continue
+    }
+    def onError(ex: Throwable): Unit = { alert(ex.printStackTrace.toString) }
+    def onComplete(): Unit = println("O completed updateGrid")
+  }
+
+  repoDocument.onEventDocument.subscribe(observDBResults)
+
+  val onChangingId = SyncIO(
+        onInput
+            .value
+            .debounce(800 milliseconds)
+
+
+            .filter(_.length > 0)
+            .withLatest(getId) { case (txt@_, item) => (item, FindDB) }
+         --> repoDocument.eventDocument
+    )
+
+  //val txtSmallFmt = VDomModifier(vdomTxt, width:="38px", textAlign := "justify")
+  /*def txtIdArea = cmpInput("Id Area", hdlIdArea, VDomModifier(vdomTxt, width:="38px", textAlign := "justify"), None)
+  def txtArea = cmpInput("Area", hdlArea,  VDomModifier(vdomTxt, width:="150px", textAlign := "justify"), None)
+  def txtObservations = cmpInput("Observaciones", hdlArea,  VDomModifier(vdomTxt, width:="150px", textAlign := "justify"), None)*/
+
+  implicit val fieldsToUpdateGrid = (elem: Map[String, String]) => Map(
+      "key_item" -> JsonString(elem.getOrElse("id", "").toString),
+      "description_item" -> JsonString(elem.getOrElse("descripcion", "").toString ),
+      "measurement_unit" -> JsonString(elem.getOrElse("unidad", "").toString),
+      "presentation" -> JsonInt(elem.getOrElse("presentacion", 0).toString.toInt),
+      "package_unit_measurement" -> JsonString(elem.getOrElse("unid_med_pres", "").toString),
+  )
+
+  val frmLstItems = new FrmLstItemsRequisition(false)
+
+  def connectOtherComponents =
+    div(
+      emitter(
+        hdlUser
+          .drop(1)
+          .debounce(800 milliseconds)
+          .distinctUntilChanged
+      ) --> frmLstItems.hdlUser.contramap[String](x => x),
+
+      emitter(
+        hdlEntidad
+          .drop(1)
+          .debounce(800 milliseconds)
+          .distinctUntilChanged
+      ) --> frmLstItems.hdlEntidad.contramap[String](x => x),
+
+      emitter(
+        hdlIdArea
+          .drop(1)
+          .debounce(800 milliseconds)
+          .distinctUntilChanged
+      ) --> frmLstItems.hdlIdArea.contramap[String](x => x),
+
+      emitter(
+        hdlFolio
+          .drop(1)
+          .debounce(800 milliseconds)
+          .distinctUntilChanged
+      ) --> frmLstItems.hdlFolio.contramap[String]( x => x ),
+
+      emitter(
+        hdlFiscalPeriod
+          .drop(1)
+          .debounce(800 milliseconds)
+          .distinctUntilChanged
+      ) --> frmLstItems.hdlFiscalPeriod.contramap[Int](x => x),
+
+    )
+
+  val vdomTxt = VDomModifier(width := "60px", textAlign := "center")
+
+  val stylesXLarger = VDomModifier(width := "200px")
+
+  val obsOnDomMount = colibri.Observer.create[dom.Element] { elem =>
+          elem.asInstanceOf[html.Input].focus
+      }
+
+  val txtFolioOnDomMount = SyncIO(
+                              onDomMount
+                                .transformLifted (
+                                      (elem: Observable[dom.Element]) => elem
+                                )--> obsOnDomMount
+                          )
+
+
+
+  /**
+  downloadCSV(data,fileName){
+  var blob = new Blob([data], {type:  "text/plain;charset=utf-8;"});
+  var anchor = angular.element('<a/>');
+
+  if (window.navigator.msSaveBlob) { // IE
+    window.navigator.msSaveOrOpenBlob(blob, fileName)
+  } else if (navigator.userAgent.search("Firefox") !== -1) { // Firefox
+    anchor.css({display: 'none'});
+    angular.element(document.body).append(anchor);
+
+    anchor.attr({
+      href: 'data:attachment/csv;charset=utf-8,' + encodeURIComponent(data),
+      target: '_blank',
+      download: fileName
+    })[0].click();
+
+    anchor.remove();
+  } else { // Chrome
+    anchor.attr({
+      href: URL.createObjectURL(blob),
+      target: '_blank',
+      download: fileName
+    })[0].click();
+  }
+}
+    * */
+
+
+  /**val observFileDocxCreated = new Observer[Either[String, (Array[Byte], String)]] {
+    def onNext(elem: Either[String, (Array[Byte], String)]): Future[Ack] = {
+            Try {
+              elem match {
+                case Right((file, path)) =>
+
+                      val link = org.scalajs.dom.document.createElement("a").asInstanceOf[html.Anchor]
+
+                      val tmp = js.Dynamic.newInstance(js.Dynamic.global.Uint8Array)(file.toJSArray).asInstanceOf[Uint8Array]
+                      //val blob = new Blob(js.Array(tmp), BlobPropertyBag( "application/force-download" ))
+                      val blob = if( path == "getPdfRequisition")
+                                    new Blob(js.Array(tmp), BlobPropertyBag( "application/pdf" ))
+                                else
+                                  new Blob(js.Array(tmp), BlobPropertyBag( "application/force-download" ))
+
+                      val url = URL.createObjectURL( blob )
+
+                      link.href = url
+                      link.target = "_blank"
+
+                      //link.rel = "noopener noreferrer"
+
+                      if( path == "getPdfRequisition")
+                        link.setAttribute("download","chango.pdf" )
+                      else
+                        link.setAttribute("download","document_watermark.docx" )
+
+                      document.body.appendChild(link)
+                      link.click()
+                      URL.revokeObjectURL(url)
+                      document.body.removeChild(link)
+                case Left(error) => hdlProcessingSideEffects.onNext(error)
+              }
+            } match {
+                case Success(value) => value
+                case Failure(exception) => alert("Error en observEventListItems: FrmDocument" + exception.getMessage)
+            }
+            Continue
+          }
+          def onError(ex: Throwable): Unit = { alert(ex.printStackTrace.toString) }
+          def onComplete(): Unit = println("O completed updateGrid")
+  }*/
+
+  def render = div(width := "900px",
+        //connectOtherComponents,
+        div(id := "pageForm", width := "650px",
+          hdlProcessingSideEffects.map(div(clear.both, cls := "processingSideEffects", _)),
+          div(cls := "inner-shadow", sp("Requisición", width := "100px", paddingRight := "10px")),
+          div(cls := "groupControls",
+              div (clear.both, display.block,
+                  cmpInputNumber("Ejercicio", hdlFiscalPeriod, VDomModifier(width:="40px"), None),
+                  txtDateDocument,
+                  cmpInput("Folio", hdlFolio, VDomModifier(width:="40px"), Some(VDomModifier(txtFolioOnDomMount))),
+              ),
+              div(clear.both, display.block,
+                  cmpInput("Id Area", hdlIdArea, VDomModifier(vdomTxt, width:="38px", textAlign := "justify"), None),
+              ),
+              div( clear.both, display.block,
+                cmpInput("Observaciones", hdlObservacion, VDomModifier(vdomTxt, width:="150px", textAlign := "justify"), None),
+              ),
+              menuButtons,
+              div(cls := "groupControls", marginLeft := "-35px",
+                    frmLstItems.render
+              ),
+              div(cls := "groupControls", //marginLeft := "-35px",
+                  button( idAttr := "cmdPrintDocx", "Docx", cls := "myButton",
+                    onClick.transformLifted { e: Observable[MouseEvent] =>
+                      e.withLatestFrom(getMainItem){ case (event@_, (item, isNew)) =>
+                        ("", "getDocxRequisition")
+                      }
+                    } --> fileRepo.eventDocument
+                  ),
+                  button( idAttr := "cmdPrintPdf", "Pdf", cls := "myButton",
+                      onClick.transformLifted { e: Observable[MouseEvent] =>
+                        e.withLatestFrom(getMainItem){ case (event@_, (item, isNew)) =>
+                          ("", "getPdfRequisition")
+                        }
+                      } --> fileRepo.eventDocument
+                  )
+              )
+          )
+        )
+  )
+}

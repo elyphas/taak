@@ -1,0 +1,33 @@
+package server_routes
+
+import org.http4s._
+import org.http4s.dsl.io._
+import org.http4s.circe.CirceEntityCodec.circeEntityEncoder
+import org.http4s.circe._
+import io.circe.generic.auto._
+import io.circe.syntax._
+import io.circe.literal._
+import io.circe.{Decoder, Encoder}
+import cats.effect._
+import io.circe.generic.semiauto.deriveEncoder
+import types_scarango.Recipe
+
+object CatalogArticuloRoute {
+
+    implicit val decoderOutput: EntityDecoder[IO, Recipe] = jsonOf[IO, Recipe]
+
+    val route = HttpRoutes.of[IO] {
+                 case req @ POST -> Root / "CatalogUsers" =>
+                    val res = for {
+                        (item, event) <- req.as[]
+                        res <- {
+                            val ctable  = new CArticulo
+                            ctable.event(item, event)
+
+                        }
+                    } yield res.fold(l => NotFound(l.getMessage), { case (item, event) => Ok((item.asJson, event:EventsDBResult))})
+
+                    res.flatten
+            }
+            
+}

@@ -1,0 +1,262 @@
+package manik1.modules
+
+import cats.effect.SyncIO
+import org.scalajs.dom.html
+import org.scalajs.dom.window.{alert, confirm}
+import outwatch_components.inputs._
+
+import scala.util.{Failure, Success}
+import cats.implicits._
+import monix.reactive.subjects.PublishSubject
+import org.scalajs.dom
+import org.scalajs.dom.raw.MouseEvent
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.duration._
+import monix.execution.{Cancelable, Scheduler}
+import monix.reactive.Observable
+import colibri.ext.monix._
+import colibri.ext.monix.ops._
+import colibri._
+import outwatch.reactive.handlers.monix._
+import outwatch._
+import outwatch.dsl.{span => sp, _}
+
+import manik1.gridCatalogs.GridCatalogsFromInputText
+
+import repositories.CStocksRepository
+import manik1.manik1.shared.EventsDB._
+import spatutorial.shared.{Articulo, ArticuloStock}
+
+class FrmStocks(implicit
+                        ec: ExecutionContext,
+                        s: Scheduler,
+                        mainRepo: CStocksRepository
+                 ) extends FrmMainItem[ArticuloStock] {
+
+    val hdlOldItem = Handler.create[ArticuloStock](ArticuloStock()).unsafeRunSync()
+
+    val mainItem = ArticuloStock()
+
+    val hdlMainItem = Handler.create[ArticuloStock](mainItem).unsafeRunSync()
+
+    hdlMainItem.onNext(mainItem)
+
+    val hdlArea = hdlMainItem.lens[String](mainItem)(_.area)((state, newState) => state.copy(area = newState))
+    val cancelableArea = hdlArea.connect()
+
+    val hdlCveArticulo = hdlMainItem.lens[String](mainItem)(_.cve_articulo)((state, newState) => state.copy(cve_articulo = newState))
+    val cancelableCveArticulo = hdlCveArticulo.connect()
+
+    val hdlDescripcion = hdlMainItem.lens[String](mainItem)(_.descripcion)((state, newState) => state.copy(descripcion = newState))
+    val cancelableDescripcion = hdlDescripcion.connect()
+
+    val hdlUnidad = hdlMainItem.lens[String](mainItem)(_.unidad)((state, newState) => state.copy(unidad = newState))
+    val cancelableUnidad = hdlUnidad.connect()
+
+    val hdlPresentacion = hdlMainItem.lens[Option[Int]](mainItem)(_.presentacion)((state, newState) => state.copy(presentacion = newState))
+    val cancelablePresentacion = hdlPresentacion.connect()
+
+    val hdlUnidMedPres = hdlMainItem.lens[String](mainItem)(_.unid_med_pres.getOrElse(""))((state, newState) => state.copy(unid_med_pres = Some(newState)))
+    val cancelableUnidMedPres = hdlUnidMedPres.connect()
+
+    val hdlPartida = hdlMainItem.lens[String](mainItem)(_.partida.getOrElse("")){ (state, newState) =>
+                                                                                      state.copy(partida = Some(newState))
+                                                                              }
+    val cancelablePartida = hdlPartida.connect()
+
+
+    val hdlMax = hdlMainItem.lens[Double](mainItem)(_.max.getOrElse(0.0)){ (state, newState) =>
+                                                    state.copy(max = Some(newState))
+                                                  }
+    val cancelableMax = hdlMax.connect()
+
+    val hdlMin = hdlMainItem.lens[Double](mainItem)(_.min.getOrElse(0.0)){ (state, newState) =>
+                                                    state.copy(min = Some(newState))
+                                                  }
+    val cancelableMin = hdlMin.connect()
+
+    val hdlStock = hdlMainItem.lens[Double](mainItem)(_.stock.getOrElse(0.0)){ (state, newState) =>
+                                                      state.copy(stock = Some(newState))
+                                                  }
+    val cancelableStock = hdlStock.connect()
+
+    val gridCatalogArticulo = GridCatalogsFromInputText[Articulo, Articulo, EventsDBResult](hdlCveArticulo, hdlDescripcion)
+
+    val onNew = Observer.create[MainItem]{ item =>
+          hdlNew.onNext(true)
+          hdlProcessingSideEffects.onNext("Nuevo")
+          hdlMainItem.onNext(item)
+    }
+
+    val getMainItem = (hdlMainItem: Observable[MainItem], hdlNew: Observable [ Boolean ] )
+                        .parMapN{ case (item: MainItem, isNew: Boolean) => ( item, isNew ) }
+
+    val hdlCatalog = Handler.create[List[Articulo]]( List.empty).unsafeRunSync
+    val updateHdlCatalog = hdlCatalog.contramap[Map[String, String]]{ _ => List.empty}
+
+    val cleanCatalog = hdlCatalog.contramap[Map[String, String]](_ => List.empty)
+    val onChoiceItem = Observer.combine(updateHdlCatalog, cleanCatalog)
+
+    def menuButtons = div(cls := "groupControls",
+          button(id := "cmdSave", "Guardar", cls := "myButton",
+              onClick.transformLifted{ e: Observable[MouseEvent] =>
+                  e
+                      .withLatestFrom2(getMainItem, hdlOldItem){ case (event@_, (item, isNew), oldItem) =>
+                          (oldItem, item, if (isNew) InsertDBx("eventsStocks") else UpdateDBx("eventsStocks"))
+                      }
+              } --> mainRepo.eventDocument
+          ),
+          button(id := "cmdSearch", "Buscar", cls := "myButton",
+            onClick.transformLifted{ e: Observable[ MouseEvent ] =>
+                  e.withLatestFrom2(getMainItem, hdlOldItem){ case (event@_, (item, isNew), oldItem) =>
+                      (oldItem, item, FindDBx("eventsStocks"))
+                  }
+            } --> mainRepo.eventDocument
+          ),
+          button("Borrar", cls := "myButton",
+            onClick.transformLifted { e: Observable[MouseEvent] =>
+                  e.withLatestFrom2(getMainItem, hdlOldItem){ case (event@_, (item, isNew@_), oldItem) =>
+                      (oldItem, item, DeleteDBx("eventsStocks"))
+                  }
+            } --> mainRepo.eventDocument
+          ),
+          button("Nuevo", cls := "myButton", onClick.use(mainItem) --> onNew)
+        )
+
+  val vdomTxt = VDomModifier(width := "50px", marginRight := "30px", textAlign := "center")
+  val vdomTxtArea = VDomModifier(width := "300px", marginRight := "30px"/*, fontSize := "6px"*/)
+
+  /*val focusTxtCveArticulo = SyncIO (
+                                  onFocus.value.transformLifted( (e: Observable[String]) =>
+                                      e.withLatestFrom(getMainItem) { case (event@_, (item, isNew)) =>
+                                        (item, isNew)
+                                  })
+                                  /*.filter { case (item, isNew) =>
+                                      isNew  && item.id == ""
+                                  }*/
+                                  .map { case (item, isNew@_) =>
+                                    item.partida
+                                  } --> repoArticulos.getLastFolio
+                            )*/
+
+    val onChangingClave = SyncIO (
+                                onInput.value.transformLifted((e: Observable[String]) =>
+                                    e.debounce(800 milliseconds)
+                                        .distinctUntilChanged
+                                        .withLatestFrom2(getMainItem, hdlOldItem) { case (txt, (item, isNew), oldItem) =>
+                                            (txt, item, isNew, oldItem)
+                                        }
+                                        .filter { case (txt, item@_, isNew@_, oldItem) =>
+                                            (txt.length >= 12) && (oldItem.cve_articulo === "")
+                                        }
+                                        .map {  case (txt, item, isNew, oldItem) =>
+                                            (oldItem, item, FindDBx("eventsStocks"))
+                                        }
+                                        /*.withLatestFrom2(getMainItem, hdlOldId) { case (txt@_, (item, isNew), oldId) =>
+                                              println(s"El anterior id $oldId")
+                                              (item, FindDBx("getArticulo"))
+                                        }*/
+                                ) -->  mainRepo.eventDocument
+                        )
+
+  /*val onChangingClave2 = SyncIO (
+        onChange.value.transformLifted((e: Observable[String]) =>
+                e
+                    .debounce(800 milliseconds)
+                    .distinctUntilChanged
+                    .filter( _.length >= 12)
+                    .withLatestFrom(getMainItem) { case (txt@_, (item, isNew)) =>
+                        (item, FindDoobie)
+                    }
+        ) --> repo.eventDocument
+  )*/
+
+    val obsOnDomMount = colibri.Observer.create[dom.Element] { elem =>
+                elem.asInstanceOf[html.Input].focus
+            }
+
+    val txtPartidaOnDomMount = SyncIO(onDomMount.transformLifted((elem: Observable[dom.Element]) => elem)--> obsOnDomMount)
+
+    val catalogPresentaciones = PublishSubject[List[String]]()
+
+    /*def loadPresentaciones = div(
+              onDomMount { () } --> repoPresentaciones.eventDocument,
+              managedElement { element =>
+                  repoPresentaciones.obsMain.subscribe ( catalogPresentaciones )
+              }
+    )*/
+
+    val stylesXLarger = VDomModifier ( width := "80px" )
+
+  /*def connectOtherComponents = div(
+          emitter(hdlCveArticulo
+                        .distinctUntilChanged
+                        .filter(_.length >= 12)
+                        .withLatestFrom(getMainItem) { case (txt@_, (item, isNew)) =>
+                            (item, FindDoobie)
+                        }
+          ) -->repo.eventDocument
+  )*/
+
+  /*def manageProcessSideEfect = div(
+                                  processingSideEffects2,
+                                  div(managedElement { element => repoArticulos.obsProcessSideEffects.subscribe(hdlProcessingSideEffects2)})
+                                )*/
+
+  def renderRaw = div ( 
+                    id := "pageForm",
+                      div(cls := "inner-shadow", sp("Existencias", paddingRight := "5px", fontSize:="50%" ),
+                          processingSideEffects2
+                      ),
+                      managed { SyncIO(mainRepo.obsIsNew.subscribe(hdlNew)) },
+                      managed { SyncIO(mainRepo.obsMainItem.subscribe(hdlMainItem)) },
+                      managed { SyncIO(mainRepo.obsProcessSideEffects.subscribe(hdlProcessingSideEffectsNEL)) },
+
+                      div(cls := "groupControls",
+                        div(cls := "groupControls",
+                            cmpCombo("Área", hdlArea,
+                                lst = Map("ALMACEN" -> "ALMACEN", "FARMACIA" -> "FARMACIA"),
+                                itemSelected = "",
+                                Some(VDomModifier(stylesXLarger))
+                            ),
+                        ),
+                        div(cls := "groupControls",
+                            cmpInput( "Cve.Articulo",
+                                      hdlCveArticulo,
+                                      VDomModifier ( vdomTxt, width:="70px" ),
+                                      Some ( VDomModifier ( onChangingClave ) )
+                            ),
+                            cmpInput("Partida",
+                                  hdlPartida,
+                                  VDomModifier ( width := "40px", textAlign := "center" ),
+                                  None  //Some(gridCatalogPartida.onChangeShow("ftsPartida", "cve_partida", (str: String)=>{str.length>=2}))
+                            ),
+                            cmpInput("Descripcion",
+                                          hdlDescripcion,
+                                          vdomTxtArea,
+                                          None/*Some(VDomModifier(focusTxtCveArticulo))*/,
+                                          inputType = "textArea"
+                            ),
+                            gridCatalogArticulo.searchResult,
+                        ),
+                        div(cls := "groupControls",
+                            cmpInput("Unidad", hdlUnidad, VDomModifier(vdomTxt, width := "70px"),
+                                  None /*Some(VDomModifier(onChangingClave))*/
+                            ),
+                            cmpInputOptionInt("Presentacion", hdlPresentacion, vdomTxt, Some(VDomModifier.empty)),
+                            cmpInput("Unidad Medida Pres.", hdlUnidMedPres, VDomModifier(vdomTxt, width := "70px"), None /*Some(VDomModifier(onChangingClave))*/ ),
+                        ),
+                        div(cls := "groupControls",
+                              cmpInputNumberDbl("Maximo", hdlMax, VDomModifier(vdomTxt, width := "70px"), None ),
+                              cmpInputNumberDbl("Minimo", hdlMin, VDomModifier(vdomTxt, width := "70px"), None ),
+                              cmpInputNumberDbl("Stock", hdlStock, VDomModifier(vdomTxt, width := "70px"), None ),
+                        ),
+
+                         menuButtons
+                      ),
+                    )
+
+  def render = colibri.Observable(renderRaw)
+
+}

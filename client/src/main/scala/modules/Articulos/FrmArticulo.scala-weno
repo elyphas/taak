@@ -1,0 +1,253 @@
+package manik1.modules
+
+import cats.effect.SyncIO
+import org.scalajs.dom.html
+import org.scalajs.dom.window.{alert, confirm}
+import outwatch_components.inputs._
+
+import scala.util.{Failure, Success}
+import cats.implicits._
+import monix.reactive.subjects.PublishSubject
+import org.scalajs.dom
+import org.scalajs.dom.raw.MouseEvent
+
+import scala.concurrent.ExecutionContext
+
+import scala.concurrent.duration._
+
+import monix.execution.{Scheduler, Cancelable}
+import monix.reactive.{Observable}
+
+import colibri.ext.monix._
+import colibri.ext.monix.ops._
+import colibri._
+import outwatch.reactive.handlers.monix._ // or if you want to use our own reactive library instead of monix: import outwatch.reactive.handler._
+import outwatch._
+import outwatch.dsl.{ span => sp, _}
+
+import spatutorial.shared.{Articulo/*, ArticuloStock, Partida*/}
+import manik1.gridCatalogs.{Catalog, GridCatalogsFromInputText}
+import manik1.repositories.RepositoryDocument
+import repositories.CArticulosRepository
+import manik1.manik1.shared.EventsDB._
+
+class FrmArticulo(implicit
+                        ec: ExecutionContext,
+                        s: Scheduler,
+                        mainRepo: CArticulosRepository,
+                        //repoDocument: RepositoryDocument[ArticuloStock],
+                        //repoPresentaciones: CPresentacionRepository
+                 ) extends FrmMainItem[Articulo] {
+
+    val hdlOldItem = Handler.create[Articulo](Articulo()).unsafeRunSync()
+
+    val mainItem = Articulo()
+
+    val hdlMainItem = Handler.create[Articulo](mainItem).unsafeRunSync()
+
+    hdlMainItem.onNext(mainItem)
+
+    val hdlCveArticulo = hdlMainItem.lens[String](mainItem)(_.cve_articulo)((state, newState) => state.copy(cve_articulo = newState))
+    val cancelableCveArticulo = hdlCveArticulo.connect()
+
+    val hdlDescripcion = hdlMainItem.lens[String](mainItem)(_.descripcion.getOrElse(""))((state, newState) => state.copy(descripcion = Some(newState)))
+    val cancelableDescripcion = hdlDescripcion.connect()
+
+    val hdlUnidad = hdlMainItem.lens[String](mainItem)(_.unidad)((state, newState) => state.copy(unidad = newState))
+    val cancelableUnidad = hdlUnidad.connect()
+
+    val hdlPresentacion = hdlMainItem.lens[Option[Int]](mainItem)(_.presentacion)((state, newState) => state.copy(presentacion = newState))
+    val cancelablePresentacion = hdlPresentacion.connect()
+
+    val hdlUnidMedPres = hdlMainItem.lens[String](mainItem)(_.unid_med_pres.getOrElse(""))((state, newState) => state.copy(unid_med_pres = Some(newState)))
+    val cancelableUnidMedPres = hdlUnidMedPres.connect()
+
+    val hdlPartida = hdlMainItem.lens[String](mainItem)(_.partida.getOrElse("")){ (state, newState) =>
+                                                                                      state.copy(partida = Some(newState))
+                                                                              }
+    val cancelablePartida = hdlPartida.connect()
+
+    val gridCatalogArticulo = GridCatalogsFromInputText[Articulo, Articulo, EventsDBResult](hdlCveArticulo, hdlDescripcion)
+
+    val onNew = Observer.create[MainItem]{ item =>
+          hdlNew.onNext(true)
+          hdlProcessingSideEffects.onNext("Nuevo")
+          hdlMainItem.onNext(item)
+    }
+
+    val getMainItem = (hdlMainItem: Observable[MainItem], hdlNew: Observable [ Boolean ] )
+                        .parMapN{ case (item: MainItem, isNew: Boolean) => ( item, isNew ) }
+
+    val hdlCatalog = Handler.create[List[Articulo]]( List.empty).unsafeRunSync
+    val updateHdlCatalog = hdlCatalog.contramap[Map[String, String]]{ _ => List.empty}
+
+    val cleanCatalog = hdlCatalog.contramap[Map[String, String]](_ => List.empty)
+    val onChoiceItem = Observer.combine(updateHdlCatalog, cleanCatalog)
+
+    def menuButtons = div(cls := "groupControls",
+          button(id := "cmdSave", "Guardar", cls := "myButton",
+              onClick.transformLifted{ e: Observable[MouseEvent] =>
+                    e.withLatestFrom2(getMainItem, hdlOldItem){ case (event@_, (item, isNew), oldItem) =>
+                          (oldItem, item, if (isNew) InsertDBx("eventsArticulo") else UpdateDBx("eventsArticulo"))
+                      }
+              } --> mainRepo.eventDocument
+          ),
+          button(id := "cmdSearch", "Buscar", cls := "myButton",
+            onClick.transformLifted{ e: Observable[MouseEvent] =>
+                  e.withLatestFrom2(getMainItem, hdlOldItem){ case (event@_, (item, isNew), oldItem) =>
+                      (oldItem, item, FindDBx("eventsArticulo"))
+                  }
+            } --> mainRepo.eventDocument
+          ),
+          button("Borrar", cls := "myButton",
+            onClick.transformLifted { e: Observable[MouseEvent] =>
+                  e.withLatestFrom2(getMainItem, hdlOldItem){ case (event@_, (item, isNew@_), oldItem) =>
+                      (oldItem, item, DeleteDBx("eventsArticulo"))
+                  }
+            } --> mainRepo.eventDocument
+          ),
+          button("Nuevo", cls := "myButton", onClick.use(mainItem) --> onNew)
+        )
+
+  val vdomTxt = VDomModifier(width := "80px", marginRight := "30px", textAlign := "center")
+  val vdomTxtArea = VDomModifier(width := "300px", marginRight := "30px" /*, fontSize := "70%"*/ )
+
+  /*val focusTxtCveArticulo = SyncIO (
+                                  onFocus.value.transformLifted( (e: Observable[String]) =>
+                                      e.withLatestFrom(getMainItem) { case (event@_, (item, isNew)) =>
+                                        (item, isNew)
+                                  })
+                                  /*.filter { case (item, isNew) =>
+                                      isNew  && item.id == ""
+                                  }*/
+                                  .map { case (item, isNew@_) =>
+                                    item.partida
+                                  } --> repoArticulos.getLastFolio
+                            )*/
+
+  /*val onChangingClave = SyncIO (
+                                onInput.value.transformLifted((e: Observable[String]) =>
+                                    e.debounce(800 milliseconds)
+                                        .distinctUntilChanged
+                                        .withLatestFrom2(getMainItem, hdlOldItem) { case (txt, (item, isNew), oldItem) =>
+                                            (txt, item, isNew, oldItem)
+                                        }
+                                        .filter { case (txt, item@_, isNew@_, oldItem) =>
+                                            println("Antes de filtrar para buscar la clave")
+                                            println(txt)
+                                            println(oldItem)
+                                            (txt.length >= 12) && (oldItem.cve_articulo === "")
+                                        }
+                                        .map {  case (txt, item, isNew, oldId) =>
+                                            //(item, isNew)
+                                            (item, FindDBx("getArticulo"))
+                                        }
+                                        /*.withLatestFrom2(getMainItem, hdlOldId) { case (txt@_, (item, isNew), oldId) =>
+                                            println(s"El anterior id $oldId")
+                                            (item, FindDBx("eventsArticulo"))
+                                        }*/
+                                ) -->  repoArticulos.eventDocument
+                        )*/
+
+  val onChangingClave2 = SyncIO (
+        onChange.value.transformLifted((e: Observable[String]) =>
+                e
+                    .debounce(800 milliseconds)
+                    .distinctUntilChanged
+                    .filter( _.length >= 12)
+                    .withLatestFrom2(getMainItem, hdlOldItem) { case (txt@_, (item, isNew), oldItem) =>
+                        (oldItem, item, FindDBx("eventsArticulo"))
+                    }
+        ) --> mainRepo.eventDocument
+  )
+
+    val obsOnDomMount = colibri.Observer.create[dom.Element] { elem =>
+                elem.asInstanceOf[html.Input].focus
+            }
+
+    val txtPartidaOnDomMount = SyncIO(onDomMount.transformLifted((elem: Observable[dom.Element]) => elem)--> obsOnDomMount)
+
+    val catalogPresentaciones = PublishSubject[List[String]]()
+
+    /*def loadPresentaciones = div(
+              onDomMount { () } --> repoPresentaciones.eventDocument,
+              managedElement { element =>
+                  repoPresentaciones.obsMain.subscribe ( catalogPresentaciones )
+              }
+    )*/
+
+    val stylesXLarger = VDomModifier(width := "200px")
+
+  /*def connectOtherComponents = div(
+          emitter(hdlCveArticulo
+                        .distinctUntilChanged
+                        .filter(_.length >= 12)
+                        .withLatestFrom(getMainItem) { case (txt@_, (item, isNew)) =>
+                            (item, FindDoobie)
+                        }
+          ) -->repo.eventDocument
+  )*/
+
+  /*def manageProcessSideEfect = div(
+                                  processingSideEffects2,
+                                  div(managedElement { element => repoArticulos.obsProcessSideEffects.subscribe(hdlProcessingSideEffects2)})
+                                )*/
+
+  def renderRaw = div ( 
+                    id := "pageForm",
+                      //connectOtherComponents,
+                      //div(cls := "inner-shadow", sp("Articulos")),
+
+                        div(cls := "inner-shadow", sp("Articulos", paddingRight := "5px", fontSize:="50%"),
+                            processingSideEffects2
+                        ),
+
+                        managed { SyncIO(mainRepo.obsIsNew.subscribe(hdlNew)) },
+                        managed { SyncIO(mainRepo.obsOldItem.subscribe(hdlOldItem)) },
+                        managed { SyncIO(mainRepo.obsMainItem.subscribe(hdlMainItem)) },
+                        managed { SyncIO(mainRepo.obsProcessSideEffects.subscribe(hdlProcessingSideEffectsNEL)) },
+
+                        //manageProcessSideEfect,
+                        //managed { repoArticulos.observableLastClave.subscribe(hdlCveArticulo) },
+                        //managedElement { element => repoArticulos.observableLastClave.subscribe(hdlCveArticulo) },
+                        //managed(repoArticulos.obsMainItem.subscribe(hdlMainItem)),
+                        //managed(SyncIO { repoArticulos.observableLastClave.subscribe(hdlCveArticulo) }),
+                        //loadPresentaciones,
+                        //managed { SyncIO(mainRepo.obsIsNew.subscribe(hdlNew)) },
+                        //managed { SyncIO(mainRepo.obsMainItem.subscribe(hdlMainItem)) },
+                        //managed { SyncIO(repoDocument.obsPreviousItem.subscribe(hdlOldItem)) },
+                      div(cls := "groupControls",
+                        div(cls := "groupControls",
+                            cmpInput("Partida", hdlPartida, VDomModifier(width := "40px", textAlign := "center"),
+                                  None  //Some(gridCatalogPartida.onChangeShow("ftsPartida", "cve_partida", (str: String)=>{str.length>=2}))
+                            ),
+                            /*cmpInput("Descripcion Partida", hdlPartidaDescripcion, VDomModifier(width := "250px"),
+                                Some(gridCatalogPartida.onChangeShow("ftsPartida", "descripcion", (str: String)=>{str.length>=5})),
+                                inputType = "textArea"),*/
+                            //gridCatalogPartida.searchResult,
+                        ),
+                        div(cls := "groupControls",
+                            cmpInput("Cve.Articulo",
+                                    hdlCveArticulo,
+                                    VDomModifier(vdomTxt, width:="90px"),
+                                    Some(VDomModifier(onChangingClave2)) ),
+                            cmpInput("Descripcion",
+                                          hdlDescripcion,
+                                          vdomTxtArea,
+                                          None/*Some(VDomModifier(focusTxtCveArticulo))*/,
+                                          inputType = "textArea"
+                            ),
+                            gridCatalogArticulo.searchResult,
+                        ),
+                        div(cls := "groupControls",
+                            cmpInput("Unidad", hdlUnidad, VDomModifier(vdomTxt, width:="90px"), None /*Some(VDomModifier(onChangingClave))*/ ),
+                            cmpInputOptionInt("Presentacion", hdlPresentacion, vdomTxt, Some(VDomModifier.empty)),
+                            cmpInput("Unidad Medida Pres.", hdlUnidMedPres, VDomModifier(vdomTxt, width:="90px"), None /*Some(VDomModifier(onChangingClave))*/ ),
+                        ),
+                         menuButtons
+                      ),
+                    )
+
+  def render = colibri.Observable(renderRaw)
+
+}

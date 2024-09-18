@@ -1,0 +1,25 @@
+[0m[[0m[0minfo[0m] [0m[0mFast optimizing /home/elyphas/Prjs/taak/client/target/scala-2.13/client-fastopt[0m
+[0m[[0m[0mdebug[0m] [0m[0mLinker: Compute reachability: 555791 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mLinker: Assemble LinkedClasses: 39824 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mLinker: 630110 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mOptimizer: Batch mode: true[0m
+[0m[[0m[0mdebug[0m] [0m[0mOptimizer: Incremental part: 148447 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mOptimizer: Elidable constructors: 8050 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mOptimizer: Optimizing 29975 methods.[0m
+[0m[[0m[0mdebug[0m] [0m[0mOptimizer: Optimizer part: 1840410 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mOptimizer: 2016338 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mRefiner: Compute reachability: 282207 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mRefiner: Assemble LinkedClasses: 86392 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mRefiner: 371615 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mModule Splitter: Calculate Dependency Info: 6735 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mModule Splitter: Analyze Modules: 2595 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mModule Splitter: Assemble Modules: 21671 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mModule Splitter: 32388 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mEmitter: Generate Classes: 1498066 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mEmitter: Write trees: 24788 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mEmitter: Class tree cache stats: reused: 0 -- invalidated: 3922[0m
+[0m[[0m[0mdebug[0m] [0m[0mEmitter: Method tree cache stats: reused: 0 -- invalidated: 16395[0m
+[0m[[0m[0mdebug[0m] [0m[0mEmitter: Post transforms: total: 24438 -- nested: 95 -- nested avoided: 2544[0m
+[0m[[0m[0mdebug[0m] [0m[0mEmitter: 1612696 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mBasicBackend: Write result: 143806 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mBasicBackend: total modules: 1; re-written: 1[0m

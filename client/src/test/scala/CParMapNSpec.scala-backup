@@ -1,0 +1,144 @@
+package client_testear
+
+import manik1.modules.FrmComparative
+import manik1.services.WSCovenant
+import monix.execution.Ack
+import monix.execution.Ack.Continue
+import monix.reactive.Observer
+import outwatch.dom._
+import outwatch.dom.dsl._
+import spatutorial.shared.LstItems
+
+import scala.concurrent.Future
+/*import outwatch.ext.monix._
+import outwatch.ext.monix.handler._*/
+import cats.effect.{IO, SyncIO}
+import client_testear.Deprecated.IgnoreWarnings.initEvent
+import org.scalajs.dom.{CustomEvent, Element, Event, document, html}
+
+import org.scalatest.Tag
+
+object GetTenderers extends Tag("GetTenderers")
+
+class CParMapNSpec extends JSDomSpec  {
+
+  def sendEvent(elem: Element, eventType: String) = {
+    val event = document.createEvent("Events")
+    initEvent(event)(eventType, canBubbleArg = true, cancelableArg = false)
+    elem.dispatchEvent(event)
+  }
+
+  /*"no funciona" must "call through covenant getTenderers" taggedAs(GetTenderers) in {
+    WSCovenant.api.getTenderers ( Some ( "1874-2019-ADQ2" ) ).foreach {
+      case Right(value) => println ( "Deberia regresar despues de testear ######################################### " )
+      case Left ( value ) =>
+        println ( "Deberia regresar despues de testear #########################################" )
+        println ( s"Ocurrio un error del tipo: $value" )
+    }
+  }*/
+
+  /*"getIdComparative" should "contain a string" in {
+    val folio = 1874
+    val frm = new FrmComparative()
+    val updateIdComparative = IO {
+                                    var idTesting = folio + "-2019-ADQ2"
+
+                                    val observer = new Observer[Any] {
+                                      def onNext(elem: Any): Future[Ack] = {
+                                        println(s"observando O-->$elem")
+                                        Continue
+                                      }
+                                      def onError(ex: Throwable): Unit =  ex.printStackTrace()
+                                      def onComplete(): Unit =  println("O completed")
+                                    }
+                                    frm.getIdComparative.subscribe ( observer )
+                                    frm.hdlFolio.onNext( folio )
+                                    frm.getIdComparative.completed
+                                    idTesting shouldBe "1874-2019-ADQ2"
+                              }
+
+    val programa = for {
+      _ <- OutWatch.renderInto[IO]("#root",frm.render)
+      _ <- updateIdComparative
+    } yield succeed
+    programa.unsafeRunSync()
+  }*/
+
+
+  /*it should "Clickar" in {
+    val but = input ( id := "clicki",
+      onClick.foreach ( println ( "Clickeando en un cuadro de texto  ########################### " ) ),
+      onInput.value.foreach(println ( "En el changos por fin onInput en un cuadro de texto  ########################### " ) )
+
+    )
+    OutWatch.renderInto[ IO ]("#root", but ).unsafeRunSync( )
+    val element = document.getElementById ( "clicki" )
+    sendEvent(element, "input")
+    sendEvent(element, "change")
+    sendEvent(element, "onChange")
+    sendEvent(element, "click")
+    sendEvent(element, "click")
+  }*/
+
+  /*"Testing the onInput event" should "print the message" in {
+    val frm = new FrmComparative
+
+    OutWatch.renderInto[IO]( "#root", frm.renderWithOutObserv ).map { _ =>
+      println("Test if is triggered the onInput event")
+      val txtFolio = org.scalajs.dom.document.getElementById("txtFolio")
+      sendEvent(txtFolio, "input")
+    }.unsafeRunSync()
+  }*/
+
+  /*"txt in frmComparative" should "contain a string" in {
+    println("Probando el FrmComparativo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ")
+
+    val texto = input( id:="txtFolio",
+                      onInput.value.foreach( println("Changos oninput"))
+                  )
+
+    val programa = for {
+      _ <- OutWatch.renderInto[IO]( "#root", texto )
+      txtFolio <- IO(org.scalajs.dom.document.getElementById ( "txtFolio" ) )
+      _ <- IO(txtFolio.textContent = "1874")
+      event <- IO {
+                    val event = document.createEvent("Events")
+                    initEvent(event)("change", canBubbleArg = false, cancelableArg = true)
+                    event
+                }
+      _ <- IO {
+                  println ( "is suppose to trigger the event onInput" )
+                  sendEvent ( txtFolio, "onchange")
+                  txtFolio.dispatchEvent( event )
+              }
+    } yield succeed
+    programa.unsafeRunSync()
+  }*/
+
+  /*it should "be able to render basic handler" in {
+    val counter: VDomModifier = button(
+      id := "click",
+      Handler.create[Int](0).map { handler =>
+        VDomModifier(onClick(handler.map(_ + 1)) --> handler, handler)
+      }
+    )
+
+    val vtree = div(counter)
+
+    OutWatch.renderInto[IO]("#app", vtree).map { _ =>
+      val element = document.getElementById("click")
+
+      element.innerHTML shouldBe "0"
+
+      sendEvent(element, "click")
+      element.innerHTML shouldBe "1"
+
+      sendEvent(element, "click")
+
+      println(s"El valor de element.innerHTML: ${element.innerHTML}")
+
+      element.innerHTML shouldBe "2"
+    }
+  }*/
+
+}

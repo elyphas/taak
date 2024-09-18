@@ -1,0 +1,122 @@
+package client_testear
+
+import manik1.modules.FrmComparative
+import outwatch.dom._
+import outwatch.dom.dsl._
+
+/*import outwatch.ext.monix._
+import outwatch.ext.monix.handler._*/
+import cats.effect.{IO, SyncIO}
+import client_testear.Deprecated.IgnoreWarnings.initEvent
+import org.scalajs.dom.{CustomEvent, Element, Event, document, html}
+
+class CClientComparativoSpec extends JSDomSpec  {
+
+  def sendEvent(elem: Element, eventType: String) = {
+    val event = document.createEvent("Events")
+    initEvent(event)(eventType, canBubbleArg = true, cancelableArg = false)
+    elem.dispatchEvent(event)
+  }
+
+  /*"txt in frmComparative" should "contain a string" in {
+    val frm = new FrmComparative()
+    val programa = for {
+      _ <- OutWatch.renderInto[IO]( "#root", div(frm.render) )
+      txtFolio <- IO(org.scalajs.dom.document.getElementById ( "txtFolio" ) )
+      txtEjercicio <- IO(org.scalajs.dom.document.getElementById ( "txtEjercicio"))
+      _ <- IO(txtFolio.asInstanceOf[html.Input].value = "1874")
+      event <- IO {
+        val event = document.createEvent("Events")
+        initEvent(event)("input", canBubbleArg = false, cancelableArg = true)
+        event
+      }
+      _ <- IO {
+        frm.hdlFolio.onNext(1874)
+        sendEvent(txtFolio, "input")
+        txtFolio.dispatchEvent(event)
+        println(s"The content of txtEjercicio: ${txtEjercicio.asInstanceOf[html.Input].value} ")
+        println(s"The content of txtFolio: ${txtFolio.asInstanceOf[html.Input].value}")
+        frm.getIdComparative.foreach( res => println(s"The result of getIdComparative is: $res"))
+      }
+    } yield succeed
+    programa.unsafeRunSync()
+  }*/
+
+
+  /*it should "Clickar" in {
+    val but = input ( id := "clicki",
+      onClick.foreach ( println ( "Clickeando en un cuadro de texto  ########################### " ) ),
+      onInput.value.foreach(println ( "En el changos por fin onInput en un cuadro de texto  ########################### " ) )
+
+    )
+    OutWatch.renderInto[ IO ]("#root", but ).unsafeRunSync( )
+    val element = document.getElementById ( "clicki" )
+    sendEvent(element, "input")
+    sendEvent(element, "change")
+    sendEvent(element, "onChange")
+    sendEvent(element, "click")
+    sendEvent(element, "click")
+  }*/
+
+  /*"Testing the onInput event" should "print the message" in {
+    val frm = new FrmComparative
+
+    OutWatch.renderInto[IO]( "#root", frm.renderWithOutObserv ).map { _ =>
+      println("Test if is triggered the onInput event")
+      val txtFolio = org.scalajs.dom.document.getElementById("txtFolio")
+      sendEvent(txtFolio, "input")
+    }.unsafeRunSync()
+  }*/
+
+  /*"txt in frmComparative" should "contain a string" in {
+    println("Probando el FrmComparativo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ")
+
+    val texto = input( id:="txtFolio",
+                      onInput.value.foreach( println("Changos oninput"))
+                  )
+
+    val programa = for {
+      _ <- OutWatch.renderInto[IO]( "#root", texto )
+      txtFolio <- IO(org.scalajs.dom.document.getElementById ( "txtFolio" ) )
+      _ <- IO(txtFolio.textContent = "1874")
+      event <- IO {
+                    val event = document.createEvent("Events")
+                    initEvent(event)("change", canBubbleArg = false, cancelableArg = true)
+                    event
+                }
+      _ <- IO {
+                  println ( "is suppose to trigger the event onInput" )
+                  sendEvent ( txtFolio, "onchange")
+                  txtFolio.dispatchEvent( event )
+              }
+    } yield succeed
+    programa.unsafeRunSync()
+  }*/
+
+  /*it should "be able to render basic handler" in {
+    val counter: VDomModifier = button(
+      id := "click",
+      Handler.create[Int](0).map { handler =>
+        VDomModifier(onClick(handler.map(_ + 1)) --> handler, handler)
+      }
+    )
+
+    val vtree = div(counter)
+
+    OutWatch.renderInto[IO]("#app", vtree).map { _ =>
+      val element = document.getElementById("click")
+
+      element.innerHTML shouldBe "0"
+
+      sendEvent(element, "click")
+      element.innerHTML shouldBe "1"
+
+      sendEvent(element, "click")
+
+      println(s"El valor de element.innerHTML: ${element.innerHTML}")
+
+      element.innerHTML shouldBe "2"
+    }
+  }*/
+
+}

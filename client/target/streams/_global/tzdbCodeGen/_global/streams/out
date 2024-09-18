@@ -1,0 +1,4 @@
+[0m[[0m[0minfo[0m] [0m[0mtzdb data missing. downloading latest version to /home/elyphas/Prjs/taak/client/target/scala-2.13/resource_managed/main/tzdb...[0m
+[0m[[0m[0minfo[0m] [0m[0mdownloading from http://www.iana.org/time-zones/repository/tzdata-latest.tar.gz[0m
+[0m[[0m[0minfo[0m] [0m[0mto file /home/elyphas/Prjs/taak/client/target/scala-2.13/resource_managed/main/tzdb.tar.gz[0m
+[0m[[0m[0minfo[0m] [0m[0mGenerating tzdb from db at /home/elyphas/Prjs/taak/client/target/scala-2.13/resource_managed/main/tzdb to /home/elyphas/Prjs/taak/client/target/scala-2.13/src_managed/main[0m

@@ -1,0 +1,317 @@
+package types_scarango
+
+import java.util.Date
+
+import com.outr.arango.{Document, DocumentModel, Field, Id, Index}
+import fabric.rw._ //{ReaderWriter, ccRW}
+
+import java.text.SimpleDateFormat
+
+/**Balance dentro de los paquetes (existencias).*/
+case class PackBalance (  /** Arango table, tblbalance_items_collective.  */
+      entidad: Option[String],
+      area: Option[String],
+      fiscal_period: Int,
+      folio: String,
+      timestamp: Long,
+      cve_articulo: String,
+      descripcion: String,
+      unidad: String,
+      presentacion: Option[Int],
+      unid_med_pres: Option[String],
+      partida: Option[String],
+      amount_by_pack: Int,
+      balance: Int
+)
+
+object PackBalance {
+    def apply (
+          entidad: Option[String],
+          area: Option[String],
+          fiscal_period: Int = 2021,
+          folio: String = "",
+          timestamp: Long = 0,
+          cve_articulo: String = "",
+          descripcion: String = "",
+          unidad: String = "",
+          presentacion: Option[Int] = None,
+          unid_med_pres: Option[String] = None,
+          partida: Option[String] = None,
+          amount_by_pack: Int = 0,
+          balance: Int = 0
+    ): PackBalance = new PackBalance (
+          entidad = entidad,
+          area = area,
+          fiscal_period = fiscal_period,
+          folio = folio,
+          timestamp = timestamp,
+          cve_articulo = cve_articulo,
+          descripcion = descripcion,
+          unidad = unidad,
+          presentacion = presentacion,
+          unid_med_pres = unid_med_pres,
+          partida = partida,
+          amount_by_pack = amount_by_pack,
+          balance = balance
+    )
+
+    def toItemPackCollectiveOutputsFromStock(item: PackBalance, output_packs: Int): PackOutputFromStock = {
+
+        val date = (new java.util.Date()).getTime().toLong
+        val date2 = (new SimpleDateFormat("dd/MM/yyyy")).format(new Date(date))
+
+        PackOutputFromStock (
+                          entidad = item.entidad,
+                          area = item.area,
+                          cve_articulo = item.cve_articulo,
+                          descripcion = item.descripcion,
+                          unidad = item.unidad,
+                          presentacion = item.presentacion,
+                          unid_med_pres = item.unid_med_pres,
+                          //partida = item.partida,
+                          //fecha = date2,
+                          timestamp = date,
+                          output = output_packs
+                  )
+  }
+
+  def toNative(item: PackBalanceScarango, amount_by_pack: Int, residuo: Int): PackBalance = {
+                        val date = (new java.util.Date()).getTime().toLong
+
+                        PackBalance (
+                              entidad = item.area,
+                              area = item.area,
+                              fiscal_period = item.fiscal_period,
+                              folio = item.folio,
+                              timestamp = date,
+                              cve_articulo = item.cve_articulo,
+                              descripcion = item.descripcion,
+                              unidad = item.unidad.getOrElse(""),
+                              presentacion = item.presentacion,
+                              unid_med_pres = item.unid_med_pres,
+                              partida = item.partida,
+                              amount_by_pack = amount_by_pack,
+                              balance = residuo
+                        )
+                  }
+
+    def createId(item: PackBalance): String =
+                item.entidad.getOrElse("") + "-" +
+                item.area.getOrElse("") + "-" +
+                item.fiscal_period + "-" +
+                item.folio + "-" +
+                item.cve_articulo
+
+    def toScarango(item: PackBalance): PackBalanceScarango =  PackBalanceScarango(
+                entidad = item.entidad,
+                area = item.area,
+                fiscal_period = item.fiscal_period,
+                folio = item.folio,
+                timestamp = item.timestamp,
+                cve_articulo = item.cve_articulo,
+                descripcion = item.descripcion,
+                unidad = Some(item.unidad),
+                presentacion = item.presentacion,
+                unid_med_pres = item.unid_med_pres,
+                partida = item.partida,
+                amount_by_pack = item.amount_by_pack,
+                balance = item.balance,
+                _id = PackBalanceScarango.id(createId(item))
+          )
+
+  def toNative(item: PackBalanceScarango): PackBalance = PackBalance (
+                      entidad = item.entidad,
+                      area = item.area,
+                      fiscal_period = item.fiscal_period,
+                      folio = item.folio,
+                      timestamp = item.timestamp,
+                      cve_articulo = item.cve_articulo,
+                      descripcion = item.descripcion,
+                      unidad = item.unidad.getOrElse(""),
+                      presentacion = item.presentacion,
+                      unid_med_pres = item.unid_med_pres,
+                      partida = item.partida,
+                      amount_by_pack = item.amount_by_pack,
+                      balance = item.balance
+                )
+
+  def toPackBalance(item: PackBalance, residuo: Int): PackBalance = {
+        val date = (new java.util.Date()).getTime().toLong
+
+        PackBalance(
+              entidad = item.entidad,
+              area = item.area,
+              fiscal_period = item.fiscal_period,
+              folio = item.folio,
+              timestamp = date,
+              cve_articulo = item.cve_articulo,
+              descripcion = item.descripcion,
+              amount_by_pack = item.amount_by_pack,
+              balance = residuo
+        )
+  }
+}
+
+case class PackBalanceScarango (
+           entidad: Option[String],
+           area: Option[String],
+           fiscal_period: Int,
+           folio: String,
+           timestamp: Long,
+           cve_articulo: String,
+           descripcion: String,
+           unidad: Option[String],
+           presentacion: Option[Int] = None,
+           unid_med_pres: Option[String] = None,
+           partida: Option[String] = None,
+           amount_by_pack: Int,
+           balance: Int,
+          _id: Id[PackBalanceScarango] = PackBalanceScarango.id()
+   ) extends Document[PackBalanceScarango]
+
+object PackBalanceScarango extends DocumentModel[PackBalanceScarango] {
+
+    override implicit val rw: RW[PackBalanceScarango] = RW.gen
+
+    override def indexes: List[Index] = Nil
+
+    override val collectionName: String = "tblbalance_items_collective"
+
+    //def ref: DocumentRef[ItemOutputsCollectiveScarango, ItemOutputsCollectiveScarango.type] = DocumentRef(this, Some("i"))
+    //override val serialization: Serialization[PackBalanceScarango] = Serialization.auto[PackBalanceScarango]
+}
+
+
+/***********************************************************************************************************************************/
+
+/**Salida de un paquete completo (descontar del stock).*/
+case class PackOutputFromStock (
+            entidad: Option[String],
+            area: Option[String],
+            cve_articulo: String,
+            descripcion: String,
+            unidad: String,
+            presentacion: Option[Int],
+            unid_med_pres: Option[String],
+            //partida: Option[String],
+            //fecha: String,
+            timestamp: Long,
+            output: Int,
+    )
+
+object PackOutputFromStock {
+    def apply (
+            entidad: Option[String],
+            area: Option[String],
+            cve_articulo: String = "",
+            descripcion: String = "",
+            unidad: String = "",
+            presentacion: Option[Int] = None,
+            unid_med_pres: Option[String] = None,
+            //partida: Option[String] = None,
+            //fecha: String = "",
+            timestamp: Long = 0,
+            output: Int = 0,
+      ): PackOutputFromStock = new PackOutputFromStock (
+            entidad = entidad,
+            area = area,
+            cve_articulo = cve_articulo,
+            descripcion = descripcion,
+            unidad = unidad,
+            presentacion = presentacion,
+            unid_med_pres = unid_med_pres,
+            //partida = partida,
+            //fecha = fecha,
+            timestamp = timestamp,
+            output = output
+    )
+
+  def toArticulo(item: PackOutputFromStock) =
+          ArticuloStock (
+              entidad = item.entidad.getOrElse(""),
+              area = item.area.getOrElse(""),
+              cve_articulo = item.cve_articulo,
+              descripcion = item.descripcion,
+              unidad = item.unidad,
+              presentacion = item.presentacion,
+              unid_med_pres = item.unid_med_pres,
+              //partida = item.partida,
+          )
+
+    def createId(item: PackOutputFromStock) = {
+            item.entidad.getOrElse("") + "-" +
+            item.area.getOrElse("") + "-" +
+            item.timestamp + "-" + 
+            item.cve_articulo
+    }
+
+    def toScarango(item: PackOutputFromStock) =
+            PackOutputFromStockScarango (
+                  entidad = item.entidad,
+                  area = item.area,
+                  cve_articulo = item.cve_articulo,
+                  descripcion = item.descripcion,
+                  unidad = item.unidad,
+                  presentacion = item.presentacion,
+                  unid_med_pres = item.unid_med_pres,
+                  //partida = item.partida,
+                  //fecha = item.fecha,
+                  timestamp = item.timestamp,
+                  output = item.output,
+                  //_id = PackOutputFromStockScarango.id(identifier)
+                  _id = PackOutputFromStockScarango.id(createId(item))
+            )
+
+    def toItemPackCollectiveOutputsFromStock(item: PackOutputFromStockScarango): PackOutputFromStock =
+            PackOutputFromStock (
+                entidad = item.entidad,
+                area = item.area,
+                cve_articulo = item.cve_articulo,
+                descripcion = item.descripcion,
+                unidad = item.unidad,
+                presentacion = item.presentacion,
+                unid_med_pres = item.unid_med_pres,
+                //partida = item.partida,
+                //fecha = item.fecha,
+                timestamp = item.timestamp,
+                output = item.output
+            )
+
+    def toStock(item: PackOutputFromStock): Stock = Stock(
+              entidad = item.entidad.getOrElse(""),
+              area = item.area.getOrElse(""),
+              key_item = item.cve_articulo,
+              description_item = item.descripcion,
+              measure_unit = item.unidad,
+              presentation = item.presentacion,
+              pack_unit_measure = item.unid_med_pres,
+              stock = 0
+    )
+
+
+}
+
+case class PackOutputFromStockScarango (
+            entidad: Option[String],
+            area: Option[String],
+            cve_articulo: String,
+            descripcion: String,
+            unidad: String,
+            presentacion: Option[Int],
+            unid_med_pres: Option[String],
+            //partida: Option[String],
+            //fecha: String,
+            timestamp: Long,
+            output: Int,
+            _id: Id[PackOutputFromStockScarango] = PackOutputFromStockScarango.id()
+) extends Document[PackOutputFromStockScarango]
+
+object PackOutputFromStockScarango extends DocumentModel[PackOutputFromStockScarango] {
+
+    override implicit val rw: RW[PackOutputFromStockScarango] = RW.gen
+
+    override def indexes: List[Index] = Nil
+    override val collectionName: String = "tbl_item_pack_collective_output_from_stock"
+    //def ref: DocumentRef[ItemOutputsCollectiveScarango, ItemOutputsCollectiveScarango.type] = DocumentRef(this, Some("i"))
+    //override val serialization: Serialization[PackOutputFromStockScarango] = Serialization.auto[PackOutputFromStockScarango]
+}

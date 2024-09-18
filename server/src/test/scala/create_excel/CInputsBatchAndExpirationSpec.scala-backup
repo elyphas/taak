@@ -1,0 +1,50 @@
+package testing_ws_catalogs_scarango
+
+import cats.data.EitherT
+import cats._
+import cats.implicits._
+import example.CInputsBatchAndExpiration
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
+
+/*import scala.concurrent.ExecutionContext.global
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers*/
+import org.scalatest.Tag
+
+import scala.concurrent.Future
+import scala.util.{Failure, Success}
+
+object SaveInputsBatchAndExpirationToExcelSpec extends Tag("SaveInputsBatchAndExpirationToExcelSpec")
+
+class CInputsBatchAndExpirationSpec extends  InitializeDBSpec {
+
+  "Get the outpus" should "shows the outputs" taggedAs (SaveInputsBatchAndExpirationToExcelSpec) in {
+
+      implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
+
+      val ctest = new CInputsBatchAndExpiration
+
+      val result = for {
+                        //_ <- database.init()
+                      xx <- EitherT(ctest.getDetailsInputs())
+                      msg <- EitherT(ctest.saveToExcel(xx._1))
+      } yield {
+            //xx._1.foreach(println)
+      }
+
+      result.value.transformWith {
+          case Success(value) =>
+              Future.successful {
+                  println("Lo logro con exito")
+                  assert(true)
+              }
+          case Failure(exception) =>
+              println(exception.getMessage + "-" + exception.getLocalizedMessage)
+              Future.successful {
+                  println(exception.getMessage + "-" + exception.getLocalizedMessage)
+                  assert(true)
+              }
+      }
+  }
+}

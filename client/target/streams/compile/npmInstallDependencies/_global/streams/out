@@ -1,0 +1,10 @@
+[0m[[0m[0minfo[0m] [0m[0mUpdating NPM dependencies[0m
+[0m[[0m[0minfo[0m] [0m[0mUsing lockfile /home/elyphas/Prjs/taak/client/yarn.lock[0m
+[0m[[0m[0mdebug[0m] [0m[0mCommand: yarn install --non-interactive --mutex network --prefer-offline[0m
+[0m[[0m[0minfo[0m] [0m[0myarn install v1.22.21[0m
+[0m[[0m[0minfo[0m] [0m[0m[1/4] Resolving packages...[0m
+[0m[[0m[0minfo[0m] [0m[0m[2/4] Fetching packages...[0m
+[0m[[0m[0minfo[0m] [0m[0m[3/4] Linking dependencies...[0m
+[0m[[0m[0minfo[0m] [0m[0m[4/4] Building fresh packages...[0m
+[0m[[0m[0minfo[0m] [0m[0mDone in 1.76s.[0m
+[0m[[0m[0mdebug[0m] [0m[0mWrote lockfile to /home/elyphas/Prjs/taak/client/yarn.lock[0m
